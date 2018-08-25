@@ -5,11 +5,11 @@ class Tariff {
     BigDecimal getPriceOfCallPlan(CallPlan plan) {
         switch (plan) {
             case CallPlan.BASIC_THE_NEXT:
-                return 4500
+                return 4500 + priceOfInternetFee
             case CallPlan.BASIC_HENSHIN:
-                return 3500
+                return 3500 + priceOfInternetFee
             case CallPlan.BASIC_X:
-                return 2500
+                return 2500 + priceOfInternetFee
             default:
                 assert false
         }
@@ -40,5 +40,9 @@ class Tariff {
             default:
                 assert false
         }
+    }
+
+    BigDecimal getTotalPrice(CallPlan callPlan, DataPlan dataPlan, long dataTrafficBytes) {
+        getPriceOfCallPlan(callPlan) + getPriceOfDataPlan(dataPlan, dataTrafficBytes)
     }
 }

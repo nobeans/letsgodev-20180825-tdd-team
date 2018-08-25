@@ -54,6 +54,8 @@ class TariffSpec extends Specification {
 
         where:
         callPlan                | dataPlan         | dataTrafficBytes | price
-        CallPlan.BASIC_THE_NEXT | DataPlan.FLAT_LL | 0                | 4500 + 7000
+        CallPlan.BASIC_THE_NEXT | DataPlan.FLAT_LL | 0                | 4500 + 7000 + 300
+        CallPlan.BASIC_HENSHIN  | DataPlan.FLAT_LL | 0                | 3500 + 7000 + 300
+        CallPlan.BASIC_X        | DataPlan.FLAT_LL | 0                | 2500 + 7000 + 300
     }
 }
