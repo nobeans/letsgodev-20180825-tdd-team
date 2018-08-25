@@ -2,24 +2,32 @@ package letsgodev.demo
 
 class Tariff {
 
-    BigDecimal getPriceOfCallPlan(CallPlan plan) {
+    BigDecimal getSubtotalPriceOfCall(CallPlan plan) {
+        getPriceOfCallPlan(plan) + priceOfInternetFee
+    }
+
+    private BigDecimal getPriceOfCallPlan(CallPlan plan) {
         switch (plan) {
             case CallPlan.BASIC_THE_NEXT:
-                return 4500 + priceOfInternetFee
+                return 4500
             case CallPlan.BASIC_HENSHIN:
-                return 3500 + priceOfInternetFee
+                return 3500
             case CallPlan.BASIC_X:
-                return 2500 + priceOfInternetFee
+                return 2500
             default:
                 assert false
         }
     }
 
-    BigDecimal getPriceOfInternetFee() {
+    private BigDecimal getPriceOfInternetFee() {
         300
     }
 
-    BigDecimal getPriceOfDataPlan(DataPlan plan, long dataTrafficBytes) {
+    BigDecimal getSubtotalPriceOfDataPlan(DataPlan plan, long dataTrafficBytes) {
+        getPriceOfDataPlan(plan, dataTrafficBytes)
+    }
+
+    private BigDecimal getPriceOfDataPlan(DataPlan plan, long dataTrafficBytes) {
         switch (plan) {
             case DataPlan.FLAT_LL:
                 return 7000
@@ -43,6 +51,6 @@ class Tariff {
     }
 
     BigDecimal getTotalPrice(CallPlan callPlan, DataPlan dataPlan, long dataTrafficBytes) {
-        getPriceOfCallPlan(callPlan) + getPriceOfDataPlan(dataPlan, dataTrafficBytes)
+        getSubtotalPriceOfCall(callPlan) + getSubtotalPriceOfDataPlan(dataPlan, dataTrafficBytes)
     }
 }
