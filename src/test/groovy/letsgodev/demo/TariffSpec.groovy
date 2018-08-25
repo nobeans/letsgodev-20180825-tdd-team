@@ -6,7 +6,7 @@ import spock.lang.Unroll
 class TariffSpec extends Specification {
 
     @Unroll
-    void "基本プランの料金を計算する: #plan -> #price"() {
+    void "基本プランの料金が#plan.nameのとき月額料金は#priceになる"() {
         given:
         def tariff = new Tariff()
 
