@@ -7,6 +7,8 @@ class Tariff {
                 return 4500
             case BasicPlan.HENSHIN:
                 return 3500
+            case BasicPlan.X:
+                return 2500
             default:
                 assert false
         }

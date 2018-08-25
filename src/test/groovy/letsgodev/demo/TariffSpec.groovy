@@ -17,5 +17,6 @@ class TariffSpec extends Specification {
         plan               | price
         BasicPlan.THE_NEXT | 4500
         BasicPlan.HENSHIN  | 3500
+        BasicPlan.X        | 2500
     }
 }

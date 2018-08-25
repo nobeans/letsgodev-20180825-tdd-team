@@ -7,7 +7,9 @@ enum BasicPlan {
 
     THE_NEXT("レッツゴーデベロッパー THE NEXT プラン"),
 
-    HENSHIN("レッツゴーデベロッパー 変真 プラン")
+    HENSHIN("レッツゴーデベロッパー 変真 プラン"),
+
+    X("レッツゴーデベロッパー X プラン")
 
     String name
 }
