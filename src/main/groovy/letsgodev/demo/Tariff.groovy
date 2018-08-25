@@ -24,6 +24,8 @@ class Tariff {
                 return 7000
             case FlatRatePlan.FLAT_L:
                 return 6000
+            case FlatRatePlan.FLAT_M:
+                return 4500
             default:
                 assert false
         }
