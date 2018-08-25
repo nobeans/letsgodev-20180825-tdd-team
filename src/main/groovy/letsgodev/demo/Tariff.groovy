@@ -17,4 +17,8 @@ class Tariff {
     BigDecimal getPriceOfInternetFee() {
         300
     }
+
+    BigDecimal getPriceOfFlatRatePlan(FlatRatePlan flatRatePlan) {
+        7000
+    }
 }
