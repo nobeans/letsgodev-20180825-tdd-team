@@ -1,6 +1,7 @@
 package letsgodev.demo
 
 class Tariff {
+
     BigDecimal getPriceOfBasicPlan(BasicPlan plan) {
         switch (plan) {
             case BasicPlan.THE_NEXT:
@@ -18,7 +19,7 @@ class Tariff {
         300
     }
 
-    BigDecimal getPriceOfFlatRatePlan(FlatRatePlan plan) {
+    BigDecimal getPriceOfFlatRatePlan(FlatRatePlan plan, long dataTraffic) {
         switch (plan) {
             case FlatRatePlan.FLAT_LL:
                 return 7000
