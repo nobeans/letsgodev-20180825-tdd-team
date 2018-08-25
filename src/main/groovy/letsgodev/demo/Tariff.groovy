@@ -2,6 +2,13 @@ package letsgodev.demo
 
 class Tariff {
     BigDecimal calculateMonthlyPayment(BasicPlan plan) {
-        4500
+        switch (plan) {
+            case BasicPlan.THE_NEXT:
+                return 4500
+            case BasicPlan.HENSHIN:
+                return 3500
+            default:
+                assert false
+        }
     }
 }
