@@ -2,13 +2,13 @@ package letsgodev.demo
 
 class Tariff {
 
-    BigDecimal getPriceOfBasicPlan(BasicPlan plan) {
+    BigDecimal getPriceOfCallPlan(CallPlan plan) {
         switch (plan) {
-            case BasicPlan.THE_NEXT:
+            case CallPlan.BASIC_THE_NEXT:
                 return 4500
-            case BasicPlan.HENSHIN:
+            case CallPlan.BASIC_HENSHIN:
                 return 3500
-            case BasicPlan.X:
+            case CallPlan.BASIC_X:
                 return 2500
             default:
                 assert false
@@ -19,15 +19,15 @@ class Tariff {
         300
     }
 
-    BigDecimal getPriceOfFlatRatePlan(FlatRatePlan plan, long dataTrafficBytes) {
+    BigDecimal getPriceOfDataPlan(DataPlan plan, long dataTrafficBytes) {
         switch (plan) {
-            case FlatRatePlan.FLAT_LL:
+            case DataPlan.FLAT_LL:
                 return 7000
-            case FlatRatePlan.FLAT_L:
+            case DataPlan.FLAT_L:
                 return 6000
-            case FlatRatePlan.FLAT_M:
+            case DataPlan.FLAT_M:
                 return 4500
-            case FlatRatePlan.STEPWISE_S:
+            case DataPlan.STEPWISE_S:
                 if (dataTrafficBytes <= 1_000_000_000) {
                     return 2900
                 } else if (dataTrafficBytes <= 3_000_000_000) {
