@@ -24,14 +24,17 @@ class TariffSpec extends Specification {
     @Unroll
     void "データ定額プランの料金が#plan.nameのとき月額料金は#priceになる"() {
         expect:
-        tariff.getPriceOfFlatRatePlan(plan, dataTraffic) == price
+        tariff.getPriceOfFlatRatePlan(plan, dataTrafficBytes) == price
 
         where:
-        plan                    | dataTraffic | price
-        FlatRatePlan.FLAT_LL    | 0           | 7000
-        FlatRatePlan.FLAT_L     | 0           | 6000
-        FlatRatePlan.FLAT_M     | 0           | 4500
-        FlatRatePlan.STEPWISE_S | 0           | 2900
+        plan                    | dataTrafficBytes | price
+        FlatRatePlan.FLAT_LL    | 0                | 7000
+        FlatRatePlan.FLAT_L     | 0                | 6000
+        FlatRatePlan.FLAT_M     | 0                | 4500
+        FlatRatePlan.STEPWISE_S | 0                | 2900
+        FlatRatePlan.STEPWISE_S | 0                | 2900
+        FlatRatePlan.STEPWISE_S | 1_000_000_000    | 2900
+        //FlatRatePlan.STEPWISE_S | 1_000_000_001    | 4000
     }
 
     @Unroll
