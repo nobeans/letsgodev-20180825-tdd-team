@@ -1,7 +1,7 @@
 package letsgodev.demo
 
 class Tariff {
-    BigDecimal calculateMonthlyPayment(BasicPlan plan) {
+    BigDecimal getPriceOfBasicPlan(BasicPlan plan) {
         switch (plan) {
             case BasicPlan.THE_NEXT:
                 return 4500

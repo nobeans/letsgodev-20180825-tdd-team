@@ -11,7 +11,7 @@ class TariffSpec extends Specification {
         def tariff = new Tariff()
 
         expect:
-        tariff.calculateMonthlyPayment(plan) == price
+        tariff.getPriceOfBasicPlan(plan) == price
 
         where:
         plan               | price
@@ -19,4 +19,19 @@ class TariffSpec extends Specification {
         BasicPlan.HENSHIN  | 3500
         BasicPlan.X        | 2500
     }
+
+//    @Unroll
+//    void "インターネット接続料金を計算する"() {
+//        given:
+//        def tariff = new Tariff()
+//
+//        expect:
+//        tariff.calculateMonthlyPayment(plan) == price
+//
+//        where:
+//        plan               | price
+//        BasicPlan.THE_NEXT | 4500
+//        BasicPlan.HENSHIN  | 3500
+//        BasicPlan.X        | 2500
+//    }
 }
