@@ -50,6 +50,21 @@ class Tariff {
         }
     }
 
+    BigDecimal getPriceOfAdditionalService(CustomerContract customerContract) {
+        customerContract.additionalServices.sum { AdditionalService additionalService ->
+            switch (additionalService) {
+                case AdditionalService.SAFE_COMPENSATION_SUPPORT:
+                    return 330
+                case AdditionalService.SAFE_REMOTE_SUPPORT:
+                    return 400
+                case AdditionalService.SAFE_NET_SECURITY_SUPPORT:
+                    return 500
+                default:
+                    return 0
+            }
+        } as BigDecimal ?: 0
+    }
+
     BigDecimal getTotalPrice(CustomerContract customerContract, long dataTrafficBytes) {
         getSubtotalPriceOfCall(customerContract) + getSubtotalPriceOfDataPlan(customerContract, dataTrafficBytes)
     }
