@@ -63,12 +63,12 @@ class TariffSpec extends Specification {
         tariff.getPriceOfAdditionalService(contract) == price
 
         where:
-        additionalServices                            | price
-        []                                            | 0
-        [AdditionalService.SAFE_COMPENSATION_SUPPORT] | 330
-        [AdditionalService.SAFE_REMOTE_SUPPORT]       | 400
-        [AdditionalService.SAFE_NET_SECURITY_SUPPORT] | 500
-        // TODO 組み合わせのテストを追加する
+        additionalServices                                                                                                                | price
+        []                                                                                                                                | 0
+        [AdditionalService.SAFE_COMPENSATION_SUPPORT]                                                                                     | 330
+        [AdditionalService.SAFE_REMOTE_SUPPORT]                                                                                           | 400
+        [AdditionalService.SAFE_NET_SECURITY_SUPPORT]                                                                                     | 500
+        [AdditionalService.SAFE_COMPENSATION_SUPPORT, AdditionalService.SAFE_REMOTE_SUPPORT, AdditionalService.SAFE_NET_SECURITY_SUPPORT] | 330 + 400 + 500
     }
 
     void "月ごとの合計料金(税抜き)を計算する"() {
