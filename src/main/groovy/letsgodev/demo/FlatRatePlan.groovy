@@ -9,7 +9,9 @@ enum FlatRatePlan {
 
     FLAT_L("仮面データパックL"),
 
-    FLAT_M("仮面データパックM")
+    FLAT_M("仮面データパックM"),
+
+    STEPWISE_S("仮面データパックS")
 
     String name
 }

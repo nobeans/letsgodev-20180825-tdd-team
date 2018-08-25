@@ -26,6 +26,8 @@ class Tariff {
                 return 6000
             case FlatRatePlan.FLAT_M:
                 return 4500
+            case FlatRatePlan.STEPWISE_S:
+                return 2900
             default:
                 assert false
         }

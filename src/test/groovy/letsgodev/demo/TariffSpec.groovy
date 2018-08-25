@@ -27,10 +27,11 @@ class TariffSpec extends Specification {
         tariff.getPriceOfFlatRatePlan(plan) == price
 
         where:
-        plan                 | price
-        FlatRatePlan.FLAT_LL | 7000
-        FlatRatePlan.FLAT_L  | 6000
-        FlatRatePlan.FLAT_M  | 4500
+        plan                    | price
+        FlatRatePlan.FLAT_LL    | 7000
+        FlatRatePlan.FLAT_L     | 6000
+        FlatRatePlan.FLAT_M     | 4500
+        FlatRatePlan.STEPWISE_S | 2900
     }
 
     @Unroll
