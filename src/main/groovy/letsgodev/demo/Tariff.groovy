@@ -18,7 +18,14 @@ class Tariff {
         300
     }
 
-    BigDecimal getPriceOfFlatRatePlan(FlatRatePlan flatRatePlan) {
-        7000
+    BigDecimal getPriceOfFlatRatePlan(FlatRatePlan plan) {
+        switch (plan) {
+            case FlatRatePlan.FLAT_LL:
+                return 7000
+            case FlatRatePlan.FLAT_L:
+                return 6000
+            default:
+                assert false
+        }
     }
 }

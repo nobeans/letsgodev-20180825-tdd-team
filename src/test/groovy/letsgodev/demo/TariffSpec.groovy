@@ -29,6 +29,7 @@ class TariffSpec extends Specification {
         where:
         plan                 | price
         FlatRatePlan.FLAT_LL | 7000
+        FlatRatePlan.FLAT_L  | 6000
     }
 
     @Unroll
