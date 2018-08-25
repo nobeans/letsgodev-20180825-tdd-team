@@ -1,6 +1,5 @@
 package letsgodev.demo
 
-import spock.lang.IgnoreRest
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -9,7 +8,7 @@ class TariffSpec extends Specification {
     Tariff tariff = new Tariff()
 
     @Unroll
-    void "基本プランの料金が#plan.nameのとき月額料金は#priceになる"() {
+    void "基本プランの料金が#plan.nameのとき月額料金は#price円になる"() {
         expect:
         tariff.getPriceOfBasicPlan(plan) == price
 
@@ -20,9 +19,8 @@ class TariffSpec extends Specification {
         BasicPlan.X        | 2500
     }
 
-    @IgnoreRest
     @Unroll
-    void "データ定額プランの料金が#plan.nameのとき、データ通信量が#dataTrafficBytesバイトの場合、月額料金は#priceになる"() {
+    void "データ定額プランの料金が#plan.nameのとき、データ通信量が#dataTrafficBytesバイトの場合、月額料金は#price円になる"() {
         expect:
         tariff.getPriceOfFlatRatePlan(plan, dataTrafficBytes) == price
 
