@@ -22,7 +22,7 @@ class TariffSpec extends Specification {
 
     @IgnoreRest
     @Unroll
-    void "データ定額プランの料金が#plan.nameのとき月額料金は#priceになる"() {
+    void "データ定額プランの料金が#plan.nameのとき、データ通信量が#dataTrafficBytesバイトの場合、月額料金は#priceになる"() {
         expect:
         tariff.getPriceOfFlatRatePlan(plan, dataTrafficBytes) == price
 
@@ -34,7 +34,14 @@ class TariffSpec extends Specification {
         FlatRatePlan.STEPWISE_S | 0                | 2900
         FlatRatePlan.STEPWISE_S | 0                | 2900
         FlatRatePlan.STEPWISE_S | 1_000_000_000    | 2900
-        //FlatRatePlan.STEPWISE_S | 1_000_000_001    | 4000
+        FlatRatePlan.STEPWISE_S | 1_000_000_001    | 4000
+        FlatRatePlan.STEPWISE_S | 3_000_000_000    | 4000
+        FlatRatePlan.STEPWISE_S | 3_000_000_001    | 5000
+        FlatRatePlan.STEPWISE_S | 5_000_000_000    | 5000
+        FlatRatePlan.STEPWISE_S | 5_000_000_001    | 7000
+        FlatRatePlan.STEPWISE_S | 20_000_000_000   | 7000
+        FlatRatePlan.STEPWISE_S | 20_000_000_001   | 7000
+        FlatRatePlan.STEPWISE_S | Long.MAX_VALUE   | 7000
     }
 
     @Unroll

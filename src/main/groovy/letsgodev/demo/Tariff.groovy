@@ -28,7 +28,15 @@ class Tariff {
             case FlatRatePlan.FLAT_M:
                 return 4500
             case FlatRatePlan.STEPWISE_S:
-                return 2900
+                if (dataTrafficBytes <= 1_000_000_000) {
+                    return 2900
+                } else if (dataTrafficBytes <= 3_000_000_000) {
+                    return 4000
+                } else if (dataTrafficBytes <= 5_000_000_000) {
+                    return 5000
+                } else {
+                    return 7000
+                }
             default:
                 assert false
         }
