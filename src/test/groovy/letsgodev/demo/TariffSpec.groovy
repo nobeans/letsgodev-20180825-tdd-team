@@ -9,11 +9,14 @@ class TariffSpec extends Specification {
 
     @Unroll
     void "基本プランの料金が#plan.nameのとき月額料金は#price円になる"() {
+        given:
+        def contract = new CustomerContract(callPlan: callPlan)
+
         expect:
-        tariff.getPriceOfCallPlan(plan) == price
+        tariff.getPriceOfCallPlan(contract) == price
 
         where:
-        plan                    | price
+        callPlan                | price
         CallPlan.BASIC_THE_NEXT | 4500
         CallPlan.BASIC_HENSHIN  | 3500
         CallPlan.BASIC_X        | 2500
@@ -21,11 +24,14 @@ class TariffSpec extends Specification {
 
     @Unroll
     void "データ定額プランの料金が#plan.nameのとき、データ通信量が#dataTrafficBytesバイトの場合、月額料金は#price円になる"() {
+        given:
+        def contract = new CustomerContract(dataPlan: dataPlan)
+
         expect:
-        tariff.getPriceOfDataPlan(plan, dataTrafficBytes) == price
+        tariff.getPriceOfDataPlan(contract, dataTrafficBytes) == price
 
         where:
-        plan                | dataTrafficBytes | price
+        dataPlan            | dataTrafficBytes | price
         DataPlan.FLAT_LL    | 0                | 7000
         DataPlan.FLAT_L     | 0                | 6000
         DataPlan.FLAT_M     | 0                | 4500
@@ -49,8 +55,11 @@ class TariffSpec extends Specification {
     }
 
     void "月ごとの合計料金(税抜き)を計算する"() {
+        given:
+        def contract = new CustomerContract(callPlan: callPlan, dataPlan: dataPlan)
+
         expect:
-        tariff.getTotalPrice(callPlan, dataPlan, dataTrafficBytes) == price
+        tariff.getTotalPrice(contract, dataTrafficBytes) == price
 
         where:
         callPlan                | dataPlan         | dataTrafficBytes | price

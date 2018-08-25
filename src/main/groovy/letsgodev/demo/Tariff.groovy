@@ -2,12 +2,12 @@ package letsgodev.demo
 
 class Tariff {
 
-    BigDecimal getSubtotalPriceOfCall(CallPlan plan) {
-        getPriceOfCallPlan(plan) + priceOfInternetFee
+    BigDecimal getSubtotalPriceOfCall(CustomerContract customerContract) {
+        getPriceOfCallPlan(customerContract) + priceOfInternetFee
     }
 
-    private BigDecimal getPriceOfCallPlan(CallPlan plan) {
-        switch (plan) {
+    private BigDecimal getPriceOfCallPlan(CustomerContract customerContract) {
+        switch (customerContract.callPlan) {
             case CallPlan.BASIC_THE_NEXT:
                 return 4500
             case CallPlan.BASIC_HENSHIN:
@@ -23,12 +23,12 @@ class Tariff {
         300
     }
 
-    BigDecimal getSubtotalPriceOfDataPlan(DataPlan plan, long dataTrafficBytes) {
-        getPriceOfDataPlan(plan, dataTrafficBytes)
+    BigDecimal getSubtotalPriceOfDataPlan(CustomerContract customerContract, long dataTrafficBytes) {
+        getPriceOfDataPlan(customerContract, dataTrafficBytes)
     }
 
-    private BigDecimal getPriceOfDataPlan(DataPlan plan, long dataTrafficBytes) {
-        switch (plan) {
+    private BigDecimal getPriceOfDataPlan(CustomerContract customerContract, long dataTrafficBytes) {
+        switch (customerContract.dataPlan) {
             case DataPlan.FLAT_LL:
                 return 7000
             case DataPlan.FLAT_L:
@@ -50,7 +50,7 @@ class Tariff {
         }
     }
 
-    BigDecimal getTotalPrice(CallPlan callPlan, DataPlan dataPlan, long dataTrafficBytes) {
-        getSubtotalPriceOfCall(callPlan) + getSubtotalPriceOfDataPlan(dataPlan, dataTrafficBytes)
+    BigDecimal getTotalPrice(CustomerContract customerContract, long dataTrafficBytes) {
+        getSubtotalPriceOfCall(customerContract) + getSubtotalPriceOfDataPlan(customerContract, dataTrafficBytes)
     }
 }
