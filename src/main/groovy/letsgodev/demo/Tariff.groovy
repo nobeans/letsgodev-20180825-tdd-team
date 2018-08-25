@@ -13,4 +13,8 @@ class Tariff {
                 assert false
         }
     }
+
+    BigDecimal getPriceOfInternetFee() {
+        300
+    }
 }
