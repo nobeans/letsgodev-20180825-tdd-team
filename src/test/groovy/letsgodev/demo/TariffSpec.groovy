@@ -9,7 +9,7 @@ class TariffSpec extends Specification {
         def tariff = new Tariff()
 
         and:
-        def plan = "レッツゴーデベロッパー THE NEXT プラン"
+        def plan = BasicPlan.THE_NEXT
 
         expect:
         tariff.calculateMonthlyPayment(plan) == 4500

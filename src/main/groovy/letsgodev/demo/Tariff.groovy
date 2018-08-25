@@ -1,7 +1,7 @@
 package letsgodev.demo
 
 class Tariff {
-    BigDecimal calculateMonthlyPayment(String plan) {
+    BigDecimal calculateMonthlyPayment(BasicPlan plan) {
         4500
     }
 }
