@@ -2,7 +2,11 @@ package letsgodev.demo
 
 class Tariff {
 
-    BigDecimal getSubtotalRateOfCall(CustomerContract customerContract) {
+    BigDecimal getTotalRate(CustomerContract customerContract, long dataTrafficBytes) {
+        getSubtotalRateOfCallPlan(customerContract) + getSubtotalRateOfDataPlan(customerContract, dataTrafficBytes) + getRateOfAdditionalService(customerContract)
+    }
+
+    private BigDecimal getSubtotalRateOfCallPlan(CustomerContract customerContract) {
         getRateOfCallPlan(customerContract) + internetConnectionFee
     }
 
@@ -14,17 +18,17 @@ class Tariff {
         new InternetConnection().fee
     }
 
-    BigDecimal getRateOfDataPlan(CustomerContract customerContract, long dataTrafficBytes) {
+    private BigDecimal getSubtotalRateOfDataPlan(CustomerContract customerContract, long dataTrafficBytes) {
+        getRateOfDataPlan(customerContract, dataTrafficBytes)
+    }
+
+    private BigDecimal getRateOfDataPlan(CustomerContract customerContract, long dataTrafficBytes) {
         customerContract.dataPlan.getRate(customerContract, dataTrafficBytes)
     }
 
-    BigDecimal getRateOfAdditionalService(CustomerContract customerContract) {
-        customerContract.additionalServices.sum { AdditionalService additionalService ->
+    private BigDecimal getRateOfAdditionalService(CustomerContract customerContract) {
+        customerContract.additionalServices?.sum { AdditionalService additionalService ->
             additionalService.getRate(customerContract, -1) // TODO
         } as BigDecimal ?: 0
-    }
-
-    BigDecimal getTotalRate(CustomerContract customerContract, long dataTrafficBytes) {
-        getSubtotalRateOfCall(customerContract) + getRateOfDataPlan(customerContract, dataTrafficBytes)
     }
 }
