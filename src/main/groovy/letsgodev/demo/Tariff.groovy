@@ -5,7 +5,7 @@ class Tariff {
     BigDecimal getTotalRate(CustomerContract customerContract, TrafficStats trafficStats) {
         getSubtotalRateOfCallPlan(customerContract, trafficStats) +
             getSubtotalRateOfDataPlan(customerContract, trafficStats) +
-            getRateOfAdditionalService(customerContract, trafficStats)
+            getRateOfAdditionalServices(customerContract, trafficStats)
     }
 
     private BigDecimal getSubtotalRateOfCallPlan(CustomerContract customerContract, TrafficStats trafficStats) {
@@ -28,7 +28,7 @@ class Tariff {
         customerContract.dataPlan.rate(customerContract, trafficStats)
     }
 
-    private BigDecimal getRateOfAdditionalService(CustomerContract customerContract, TrafficStats trafficStats) {
+    private BigDecimal getRateOfAdditionalServices(CustomerContract customerContract, TrafficStats trafficStats) {
         customerContract.additionalServices?.sum { AdditionalService additionalService ->
             additionalService.rate(customerContract, trafficStats)
         } as BigDecimal ?: 0

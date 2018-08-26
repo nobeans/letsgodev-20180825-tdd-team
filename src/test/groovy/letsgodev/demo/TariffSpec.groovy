@@ -65,7 +65,7 @@ class TariffSpec extends Specification {
         def customerContract = new CustomerContract(additionalServices: additionalServices)
 
         expect:
-        tariff.getRateOfAdditionalService(customerContract, trafficStats) == rate
+        tariff.getRateOfAdditionalServices(customerContract, trafficStats) == rate
 
         where:
         additionalServices                                                                                                                | rate
