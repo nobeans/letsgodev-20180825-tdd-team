@@ -14,7 +14,7 @@ class TariffSpec extends Specification {
     Tariff tariff = new Tariff()
 
     @Unroll
-    void "基本プランの#callPlanを#contractDateに新規契約し#cancelDescriptionたとき、#cutoffDateを締め日とした月額の基本料金は#proratedDescription#rate円になる"() {
+    void "基本プランの#callPlanを#contractDateに新規契約し#cancelDescriptionたとき、#cutoffDateを締め日とした月額料金は#proratedDescription#rate円になる"() {
         given:
         def customerContract = new CustomerContract(callPlanContract: new CallPlanContract(callPlan: callPlan, contractDate: dateOf(contractDate), cancelDate: dateOf(cancelDate)))
 
@@ -110,7 +110,7 @@ class TariffSpec extends Specification {
     }
 
     @Unroll
-    void "データ定額プランの#dataPlanを#contractDateに新規契約し#cancelDescriptionたとき、データ通信量が#totalDataBytesバイトの場合、#cutoffDateを締め日とした月額の基本料金は#proratedDescription#rate円になる"() {
+    void "データ定額プランの#dataPlanを#contractDateに新規契約し#cancelDescriptionたとき、データ通信量が#totalDataBytesバイトの場合、#cutoffDateを締め日とした月額料金は#proratedDescription#rate円になる"() {
         given:
         def customerContract = new CustomerContract(dataPlanContract: new DataPlanContract(dataPlan: dataPlan, contractDate: dateOf(contractDate), cancelDate: dateOf(cancelDate)))
 
@@ -199,7 +199,7 @@ class TariffSpec extends Specification {
     }
 
     @Unroll
-    void "オプションとして#additionalServicesを#contractDateに新規契約してたとき、#cutoffDateを締め日とした月額のオプション料金は#rate円になる"() {
+    void "オプションとして#contractDescriptionとき、#cutoffDateを締め日としたオプションの合計金額は#rate円になる"() {
         given:
         def additionalServiceContracts = []
 
@@ -230,12 +230,14 @@ class TariffSpec extends Specification {
         [SAFE_NET_SECURITY]                                                 | 500
         [SAFE_COMPENSATION_SERVICE, SAFE_REMOTE_SUPPORT, SAFE_NET_SECURITY] | 330 + 400 + 500
 
-        contractDate = "2018-04-01" // ここでは初回加入月の無料計算の対象外として計算する
+        contractDate = "2018-04-01" // ここでは初回加入月の無料の対象外として計算する
         cutoffDate = "2018-08-31"
+        contractDescription = additionalServices ?
+            (additionalServices.size() == 1 ? "${additionalServices.first()}だけを${contractDate}に契約している" : "${additionalServices.join('と')}を${contractDate}に契約している") : "何も契約していない"
     }
 
     @Unroll
-    void "オプションとして#cancelOnceDescription#additionalServiceを#contractDateに#contractDescriptionし#cancelDescriptionたとき、#cutoffDateを締め日とした月額のオプション料金は#description#rate円になる"() {
+    void "オプションとして#cancelOnceDescription#additionalServiceを#contractDateに#contractDescriptionし#cancelDescriptionたとき、#cutoffDateを締め日としたこのオプションの個別の金額は#description#rate円になる"() {
         given:
         def additionalServiceContracts = []
 
@@ -294,7 +296,7 @@ class TariffSpec extends Specification {
         cancelDescription = cancelDate ? "て${cancelDate}に解約し" : ""
     }
 
-    void "月ごとの合計料金(税抜き)を計算する"() {
+    void "すべてを合計した月額請求金額(税抜き)を計算する"() {
         given:
         def customerContract = new CustomerContract(
             callPlanContract: new CallPlanContract(
