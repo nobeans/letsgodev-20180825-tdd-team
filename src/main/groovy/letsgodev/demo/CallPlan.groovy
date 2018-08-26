@@ -3,7 +3,7 @@ package letsgodev.demo
 import groovy.transform.TupleConstructor
 
 @TupleConstructor
-enum CallPlan {
+enum CallPlan implements Rateable {
 
     BASIC_THE_NEXT("レッツゴーデベロッパー THE NEXT プラン", 4500),
 
@@ -17,6 +17,11 @@ enum CallPlan {
 
     @Override
     String toString() {
-        "${name}($rate)"
+        "${name}"
+    }
+
+    @Override
+    Integer getRate(CustomerContract customerContract, TrafficStats trafficStats) {
+        rate
     }
 }

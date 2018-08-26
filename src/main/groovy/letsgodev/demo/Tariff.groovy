@@ -13,7 +13,7 @@ class Tariff {
     }
 
     private BigDecimal getRateOfCallPlan(CustomerContract customerContract, TrafficStats trafficStats) {
-        customerContract.callPlan.rate
+        customerContract.callPlan.getRate(customerContract, trafficStats)
     }
 
     private BigDecimal getInternetConnectionFee() {

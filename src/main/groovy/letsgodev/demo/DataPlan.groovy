@@ -3,7 +3,7 @@ package letsgodev.demo
 import groovy.transform.TupleConstructor
 
 @TupleConstructor
-enum DataPlan {
+enum DataPlan implements Rateable {
 
     FLAT_LL("[定額]仮面データパックLL"){
         @Override
@@ -43,6 +43,7 @@ enum DataPlan {
 
     String name
 
+    @Override
     abstract Integer getRate(CustomerContract customerContract, TrafficStats trafficStats)
 
     @Override

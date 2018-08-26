@@ -3,7 +3,7 @@ package letsgodev.demo
 import groovy.transform.TupleConstructor
 
 @TupleConstructor
-enum AdditionalService {
+enum AdditionalService implements Rateable {
 
     SAFE_COMPENSATION_SUPPORT("あんしん補償サービス"){
         @Override
@@ -28,10 +28,11 @@ enum AdditionalService {
 
     String name
 
-    abstract Integer getRate(CustomerContract customerContract, TrafficStats trafficStats)
-
     @Override
     String toString() {
         name
     }
+
+    @Override
+    abstract Integer getRate(CustomerContract customerContract, TrafficStats trafficStats)
 }
