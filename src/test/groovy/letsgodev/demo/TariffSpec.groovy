@@ -120,12 +120,12 @@ class TariffSpec extends Specification {
 
         where:
         callPlan       | cutoffDate   | contractDate | cancelDate   | rate
-        BASIC_THE_NEXT | "2018-08-31" | "2018-08-15" | "2018-08-15" | RateUtils.round(4500 / cutoffDate_.lengthOfMonth())
-        BASIC_THE_NEXT | "2018-08-31" | "2018-08-15" | "2018-08-16" | RateUtils.round(4500 / cutoffDate_.lengthOfMonth() * 2)
-        BASIC_HENSHIN  | "2018-08-31" | "2018-08-15" | "2018-08-15" | RateUtils.round(3500 / cutoffDate_.lengthOfMonth())
-        BASIC_HENSHIN  | "2018-08-31" | "2018-08-15" | "2018-08-16" | RateUtils.round(3500 / cutoffDate_.lengthOfMonth() * 2)
-        BASIC_X        | "2018-08-31" | "2018-08-15" | "2018-08-15" | RateUtils.round(2500 / cutoffDate_.lengthOfMonth())
-        BASIC_X        | "2018-08-31" | "2018-08-15" | "2018-08-16" | RateUtils.round(2500 / cutoffDate_.lengthOfMonth() * 2)
+        BASIC_THE_NEXT | "2018-08-31" | "2018-08-15" | "2018-08-15" | RateUtils.round(4500 / 31)
+        BASIC_THE_NEXT | "2018-08-31" | "2018-08-15" | "2018-08-16" | RateUtils.round(4500 / 31 * 2)
+        BASIC_HENSHIN  | "2018-08-31" | "2018-08-15" | "2018-08-15" | RateUtils.round(3500 / 31)
+        BASIC_HENSHIN  | "2018-08-31" | "2018-08-15" | "2018-08-16" | RateUtils.round(3500 / 31 * 2)
+        BASIC_X        | "2018-08-31" | "2018-08-15" | "2018-08-15" | RateUtils.round(2500 / 31)
+        BASIC_X        | "2018-08-31" | "2018-08-15" | "2018-08-16" | RateUtils.round(2500 / 31 * 2)
     }
 
     @Unroll
@@ -435,6 +435,7 @@ class TariffSpec extends Specification {
     }
 
     private static LocalDate dateOf(String date) {
+        if (!date) return null
         def token = date.split("-")*.toInteger()
         assert token.size() == 3
         LocalDate.of(token[0], token[1], token[2])
