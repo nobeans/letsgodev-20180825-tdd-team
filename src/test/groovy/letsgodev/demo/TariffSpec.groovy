@@ -14,7 +14,7 @@ class TariffSpec extends Specification {
     Tariff tariff = new Tariff()
 
     @Unroll
-    void "基本プランの#callPlanを#contractDateに新規契約し#cancelDescriptionたとき、#cutoffDateを締め日とした月額料金は#proratedDescription#rate円になる"() {
+    void "基本プラン/月額料金(通話料以外): 基本プランの#callPlanを#contractDateに新規契約し#cancelDescriptionたとき、#cutoffDateを締め日とした月額料金は#proratedDescription#rate円になる"() {
         given:
         def customerContract = new CustomerContract(callPlanContract: new CallPlanContract(callPlan: callPlan, contractDate: dateOf(contractDate), cancelDate: dateOf(cancelDate)))
 
@@ -62,7 +62,7 @@ class TariffSpec extends Specification {
     }
 
     @Unroll
-    void "基本プランの#callPlanを#contractDateに新規契約し#cancelDescriptionたとき、#cutoffDateを締め日としたインターネット接続料金は#proratedDescription#rate円になる"() {
+    void "基本プラン/インターネット料金: 基本プランの#callPlanを#contractDateに新規契約し#cancelDescriptionたとき、#cutoffDateを締め日としたインターネット接続料金は#proratedDescription#rate円になる"() {
         given:
         def customerContract = new CustomerContract(callPlanContract: new CallPlanContract(callPlan: callPlan, contractDate: dateOf(contractDate), cancelDate: dateOf(cancelDate)))
 
@@ -110,7 +110,7 @@ class TariffSpec extends Specification {
     }
 
     @Unroll
-    void "データ定額プランの#dataPlanを#contractDateに新規契約し#cancelDescriptionたとき、#totalDataBytesDescription#cutoffDateを締め日とした月額料金は#proratedDescription#rate円になる"() {
+    void "データ定額プラン/月額料金: データ定額プランの#dataPlanを#contractDateに新規契約し#cancelDescriptionたとき、#totalDataBytesDescription#cutoffDateを締め日とした月額料金は#proratedDescription#rate円になる"() {
         given:
         def customerContract = new CustomerContract(dataPlanContract: new DataPlanContract(dataPlan: dataPlan, contractDate: dateOf(contractDate), cancelDate: dateOf(cancelDate)))
 
@@ -200,7 +200,7 @@ class TariffSpec extends Specification {
     }
 
     @Unroll
-    void "オプションとして#contractDescriptionとき、#cutoffDateを締め日としたオプションの合計金額は#rate円になる"() {
+    void "オプション/合計金額: オプションとして#contractDescriptionとき、#cutoffDateを締め日としたオプションの合計金額は#rate円になる"() {
         given:
         def additionalServiceContracts = []
 
@@ -238,7 +238,7 @@ class TariffSpec extends Specification {
     }
 
     @Unroll
-    void "オプションとして#cancelOnceDescription#additionalServiceを#contractDateに#contractDescriptionし#cancelDescriptionたとき、#cutoffDateを締め日としたこのオプションの個別の金額は#description#rate円になる"() {
+    void "オプション/個別料金: オプションとして#cancelOnceDescription#additionalServiceを#contractDateに#contractDescriptionし#cancelDescriptionたとき、#cutoffDateを締め日としたこのオプションの個別料金は#description#rate円になる"() {
         given:
         def additionalServiceContracts = []
 
@@ -297,7 +297,7 @@ class TariffSpec extends Specification {
         cancelDescription = cancelDate ? "て${cancelDate}に解約し" : ""
     }
 
-    void "WIP: すべてを合計した月額請求金額(税抜き)を計算する"() {
+    void "[WIP]月額請求金額: すべてを合計した月額請求金額(税抜き)を計算する"() {
         given:
         def customerContract = new CustomerContract(
             callPlanContract: new CallPlanContract(
