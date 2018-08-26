@@ -105,12 +105,12 @@ class TariffSpec extends Specification {
         tariff.getRateOfAdditionalServices(cutoffDate, customerContract, trafficStats) == rate
 
         where:
-        additionalServices                                                          | rate
-        []                                                                          | 0
-        [SAFE_COMPENSATION_SUPPORT]                                                 | 330
-        [SAFE_REMOTE_SUPPORT]                                                       | 400
-        [SAFE_NET_SECURITY_SUPPORT]                                                 | 500
-        [SAFE_COMPENSATION_SUPPORT, SAFE_REMOTE_SUPPORT, SAFE_NET_SECURITY_SUPPORT] | 330 + 400 + 500
+        additionalServices                                                  | rate
+        []                                                                  | 0
+        [SAFE_COMPENSATION_SERVICE]                                         | 330
+        [SAFE_REMOTE_SUPPORT]                                               | 400
+        [SAFE_NET_SECURITY]                                                 | 500
+        [SAFE_COMPENSATION_SERVICE, SAFE_REMOTE_SUPPORT, SAFE_NET_SECURITY] | 330 + 400 + 500
     }
 
     @Unroll
@@ -141,21 +141,21 @@ class TariffSpec extends Specification {
 
         where:
         additionalService         | canceledOnce | contractDate                | rate | description
-        SAFE_COMPENSATION_SUPPORT | false        | cutoffDate                  | 0    | "初回加入月は無料となる"
-        SAFE_COMPENSATION_SUPPORT | false        | cutoffDate.minusMonths(1)   | 0    | "初回加入月の翌月は無料となる"
-        SAFE_COMPENSATION_SUPPORT | false        | cutoffDate.minusMonths(2)   | 330  | "初回加入月の翌々月は有料となる"
-        SAFE_COMPENSATION_SUPPORT | false        | cutoffDate.minusMonths(999) | 330  | "初回加入月のかなり昔は有料となる"
-        SAFE_COMPENSATION_SUPPORT | true         | cutoffDate                  | 330  | "加入月ではあるが初回ではない場合は有料となる"
+        SAFE_COMPENSATION_SERVICE | false        | cutoffDate                  | 0    | "初回加入月は無料となる"
+        SAFE_COMPENSATION_SERVICE | false        | cutoffDate.minusMonths(1)   | 0    | "初回加入月の翌月は無料となる"
+        SAFE_COMPENSATION_SERVICE | false        | cutoffDate.minusMonths(2)   | 330  | "初回加入月の翌々月は有料となる"
+        SAFE_COMPENSATION_SERVICE | false        | cutoffDate.minusMonths(999) | 330  | "初回加入月のかなり昔は有料となる"
+        SAFE_COMPENSATION_SERVICE | true         | cutoffDate                  | 330  | "加入月ではあるが初回ではない場合は有料となる"
         SAFE_REMOTE_SUPPORT       | false        | cutoffDate                  | 0    | "初回加入月は無料となる"
         SAFE_REMOTE_SUPPORT       | false        | cutoffDate.minusMonths(1)   | 0    | "初回加入月の翌月は無料となる"
         SAFE_REMOTE_SUPPORT       | false        | cutoffDate.minusMonths(2)   | 400  | "初回加入月の翌々月は有料となる"
         SAFE_REMOTE_SUPPORT       | false        | cutoffDate.minusMonths(999) | 400  | "初回加入月のかなり昔は有料となる"
         SAFE_REMOTE_SUPPORT       | true         | cutoffDate                  | 400  | "加入月ではあるが初回ではない場合は有料となる"
-        SAFE_NET_SECURITY_SUPPORT | false        | cutoffDate                  | 0    | "初回加入月は無料となる"
-        SAFE_NET_SECURITY_SUPPORT | false        | cutoffDate.minusMonths(1)   | 0    | "初回加入月の翌月は無料となる"
-        SAFE_NET_SECURITY_SUPPORT | false        | cutoffDate.minusMonths(2)   | 500  | "初回加入月の翌々月は有料となる"
-        SAFE_NET_SECURITY_SUPPORT | false        | cutoffDate.minusMonths(999) | 500  | "初回加入月のかなり昔は有料となる"
-        SAFE_NET_SECURITY_SUPPORT | true         | cutoffDate                  | 500  | "加入月ではあるが初回ではない場合は有料となる"
+        SAFE_NET_SECURITY         | false        | cutoffDate                  | 0    | "初回加入月は無料となる"
+        SAFE_NET_SECURITY         | false        | cutoffDate.minusMonths(1)   | 0    | "初回加入月の翌月は無料となる"
+        SAFE_NET_SECURITY         | false        | cutoffDate.minusMonths(2)   | 500  | "初回加入月の翌々月は有料となる"
+        SAFE_NET_SECURITY         | false        | cutoffDate.minusMonths(999) | 500  | "初回加入月のかなり昔は有料となる"
+        SAFE_NET_SECURITY         | true         | cutoffDate                  | 500  | "加入月ではあるが初回ではない場合は有料となる"
     }
 
     void "月ごとの合計料金(税抜き)を計算する"() {

@@ -7,7 +7,7 @@ import java.time.LocalDate
 @TupleConstructor
 enum AdditionalService implements Rateable {
 
-    SAFE_COMPENSATION_SUPPORT("あんしん補償サービス"){
+    SAFE_COMPENSATION_SERVICE("あんしん補償サービス"){
         @Override
         BigDecimal rate(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) {
             if (canBeFreeForFirstContract(cutoffDate, customerContract)) {
@@ -27,7 +27,7 @@ enum AdditionalService implements Rateable {
         }
     },
 
-    SAFE_NET_SECURITY_SUPPORT("あんしんネットセキュリティ"){
+    SAFE_NET_SECURITY("あんしんネットセキュリティ"){
         @Override
         BigDecimal rate(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) {
             if (canBeFreeForFirstContract(cutoffDate, customerContract)) {
