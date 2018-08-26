@@ -8,7 +8,7 @@ class TariffSpec extends Specification {
     Tariff tariff = new Tariff()
 
     @Unroll
-    void "基本プランの料金が#callPlanのとき月額料金は#price円になる"() {
+    void "基本プランが#callPlanのとき、月額の基本料金は#price円になる"() {
         given:
         def contract = new CustomerContract(callPlan: callPlan)
 
@@ -23,7 +23,7 @@ class TariffSpec extends Specification {
     }
 
     @Unroll
-    void "データ定額プランの料金が#dataPlanのとき、データ通信量が#dataTrafficBytesバイトの場合、月額料金は#price円になる"() {
+    void "データ定額プランが#dataPlanのとき、データ通信量が#dataTrafficBytesバイトの場合、月額料金は#price円になる"() {
         given:
         def contract = new CustomerContract(dataPlan: dataPlan)
 
@@ -55,7 +55,7 @@ class TariffSpec extends Specification {
     }
 
     @Unroll
-    void "オプション#additionalServicesを契約している場合はオプション料金が#price円になる"() {
+    void "オプションとして#additionalServicesを契約しているとき、オプション料金が#price円になる"() {
         given:
         def contract = new CustomerContract(additionalServices: additionalServices)
 
