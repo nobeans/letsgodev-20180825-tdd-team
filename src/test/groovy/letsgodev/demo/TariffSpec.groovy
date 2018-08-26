@@ -108,14 +108,19 @@ class TariffSpec extends Specification {
     // TODO
     void "オプションとして#additionalServiceを契約しているとき、#description"() {
         given:
+        def oldDate = LocalDate.of(1970, 1, 1)
         def customerContract = new CustomerContract(
             additionalServiceContracts: [
+                // 過去のオプション契約
+                canceledOnce ? new AdditionalServiceContract(additionalService: additionalService, contractDate: oldDate, cancelDate: oldDate) : null,
+
+                // 計算対象となるオプション契約
                 new AdditionalServiceContract(
                     additionalService: additionalService,
                     contractDate: contractDate,
                     cancelDate: null
                 )
-            ]
+            ].findAll { it }
         )
 
         and:

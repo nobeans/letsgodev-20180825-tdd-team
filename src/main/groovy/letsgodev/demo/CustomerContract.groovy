@@ -11,4 +11,12 @@ class CustomerContract {
     DataPlan dataPlan
 
     Set<AdditionalServiceContract> additionalServiceContracts
+
+    Set<AdditionalServiceContract> getAvailableAdditionalServiceContracts() {
+        additionalServiceContracts.findAll { it.cancelDate == null }
+    }
+
+    Set<AdditionalServiceContract> getCanceledAdditionalServiceContracts() {
+        additionalServiceContracts.findAll { it.cancelDate != null }
+    }
 }
