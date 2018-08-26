@@ -60,6 +60,7 @@ class TariffSpec extends Specification {
 
         where:
         callPlan       | cutoffDate   | contractDate | cancelDate   | rate
+        BASIC_THE_NEXT | "2018-08-31" | "2018-04-01" | null         | 4500
         BASIC_THE_NEXT | "2018-08-31" | "2018-08-01" | null         | 4500
         BASIC_THE_NEXT | "2018-08-31" | "2018-08-02" | null         | RateUtils.round(4500 / 31 * 30)
         BASIC_THE_NEXT | "2018-08-31" | "2018-08-31" | null         | RateUtils.round(4500 / 31)
@@ -86,6 +87,8 @@ class TariffSpec extends Specification {
         BASIC_X        | "2018-08-31" | "2018-08-15" | "2018-08-16" | RateUtils.round(2500 / 31 * 2)
 
         cancelDescription = cancelDate ? "て${cancelDate}に解約し" : ""
+
+        proratedDescription = DateUtils.isSameMonth(dateOf(cutoffDate), dateOf(contractDate)) || DateUtils.isSameMonth(dateOf(cutoffDate), dateOf(cancelDate)) ? "日割りされて" : ""
     }
 
     @Unroll
@@ -107,7 +110,12 @@ class TariffSpec extends Specification {
 
         where:
         callPlan       | cutoffDate   | contractDate | cancelDate   | rate
+        // 日割りなし
         BASIC_THE_NEXT | "2018-08-31" | "2018-04-01" | null         | 300
+        BASIC_HENSHIN  | "2018-08-31" | "2018-04-01" | null         | 300
+        BASIC_X        | "2018-08-31" | "2018-04-01" | null         | 300
+
+        // 日割り有り
         BASIC_THE_NEXT | "2018-08-31" | "2018-08-01" | null         | 300
         BASIC_THE_NEXT | "2018-08-31" | "2018-08-02" | null         | RateUtils.round(300 / 31 * 30)
         BASIC_THE_NEXT | "2018-08-31" | "2018-08-31" | null         | RateUtils.round(300 / 31)
@@ -116,7 +124,6 @@ class TariffSpec extends Specification {
         BASIC_THE_NEXT | "2018-08-31" | "2018-04-01" | "2018-08-31" | 300
         BASIC_THE_NEXT | "2018-08-31" | "2018-08-15" | "2018-08-15" | RateUtils.round(300 / 31)
         BASIC_THE_NEXT | "2018-08-31" | "2018-08-15" | "2018-08-16" | RateUtils.round(300 / 31 * 2)
-        BASIC_HENSHIN  | "2018-08-31" | "2018-04-01" | null         | 300
         BASIC_HENSHIN  | "2018-08-31" | "2018-08-01" | null         | 300
         BASIC_HENSHIN  | "2018-08-31" | "2018-08-02" | null         | RateUtils.round(300 / 31 * 30)
         BASIC_HENSHIN  | "2018-08-31" | "2018-08-31" | null         | RateUtils.round(300 / 31)
@@ -125,7 +132,6 @@ class TariffSpec extends Specification {
         BASIC_HENSHIN  | "2018-08-31" | "2018-04-01" | "2018-08-31" | 300
         BASIC_HENSHIN  | "2018-08-31" | "2018-08-15" | "2018-08-15" | RateUtils.round(300 / 31)
         BASIC_HENSHIN  | "2018-08-31" | "2018-08-15" | "2018-08-16" | RateUtils.round(300 / 31 * 2)
-        BASIC_X        | "2018-08-31" | "2018-04-01" | null         | 300
         BASIC_X        | "2018-08-31" | "2018-08-01" | null         | 300
         BASIC_X        | "2018-08-31" | "2018-08-02" | null         | RateUtils.round(300 / 31 * 30)
         BASIC_X        | "2018-08-31" | "2018-08-31" | null         | RateUtils.round(300 / 31)
