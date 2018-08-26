@@ -34,7 +34,13 @@ class Tariff {
     }
 
     private BigDecimal getRateOfDataPlan(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) {
-        customerContract.dataPlanContract.dataPlan.rate(cutoffDate, customerContract, trafficStats)
+        def fullRate = customerContract.dataPlanContract.dataPlan.rate(cutoffDate, customerContract, trafficStats)
+        def contractDate = customerContract.dataPlanContract.contractDate
+        if (DateUtils.isSameMonth(cutoffDate, contractDate)) {
+            def ratePerDay = fullRate / cutoffDate.lengthOfMonth()
+            return RateUtils.round(ratePerDay * (contractDate.lengthOfMonth() - contractDate.dayOfMonth + 1))
+        }
+        fullRate
     }
 
     private BigDecimal getRateOfAdditionalServices(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) {
