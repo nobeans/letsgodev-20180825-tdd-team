@@ -3,6 +3,10 @@ package letsgodev.demo
 import spock.lang.Specification
 import spock.lang.Unroll
 
+import static letsgodev.demo.AdditionalService.*
+import static letsgodev.demo.CallPlan.*
+import static letsgodev.demo.DataPlan.*
+
 class TariffSpec extends Specification {
 
     Tariff tariff = new Tariff()
@@ -19,10 +23,10 @@ class TariffSpec extends Specification {
         tariff.getRateOfCallPlan(customerContract, trafficStats) == rate
 
         where:
-        callPlan                | rate
-        CallPlan.BASIC_THE_NEXT | 4500
-        CallPlan.BASIC_HENSHIN  | 3500
-        CallPlan.BASIC_X        | 2500
+        callPlan       | rate
+        BASIC_THE_NEXT | 4500
+        BASIC_HENSHIN  | 3500
+        BASIC_X        | 2500
     }
 
     @Unroll
@@ -37,21 +41,21 @@ class TariffSpec extends Specification {
         tariff.getRateOfDataPlan(customerContract, trafficStats) == rate
 
         where:
-        dataPlan            | totalDataBytes | rate
-        DataPlan.FLAT_LL    | 0              | 7000
-        DataPlan.FLAT_L     | 0              | 6000
-        DataPlan.FLAT_M     | 0              | 4500
-        DataPlan.STEPWISE_S | 0              | 2900
-        DataPlan.STEPWISE_S | 0              | 2900
-        DataPlan.STEPWISE_S | 1_000_000_000  | 2900
-        DataPlan.STEPWISE_S | 1_000_000_001  | 4000
-        DataPlan.STEPWISE_S | 3_000_000_000  | 4000
-        DataPlan.STEPWISE_S | 3_000_000_001  | 5000
-        DataPlan.STEPWISE_S | 5_000_000_000  | 5000
-        DataPlan.STEPWISE_S | 5_000_000_001  | 7000
-        DataPlan.STEPWISE_S | 20_000_000_000 | 7000
-        DataPlan.STEPWISE_S | 20_000_000_001 | 7000
-        DataPlan.STEPWISE_S | Long.MAX_VALUE | 7000
+        dataPlan   | totalDataBytes | rate
+        FLAT_LL    | 0              | 7000
+        FLAT_L     | 0              | 6000
+        FLAT_M     | 0              | 4500
+        STEPWISE_S | 0              | 2900
+        STEPWISE_S | 0              | 2900
+        STEPWISE_S | 1_000_000_000  | 2900
+        STEPWISE_S | 1_000_000_001  | 4000
+        STEPWISE_S | 3_000_000_000  | 4000
+        STEPWISE_S | 3_000_000_001  | 5000
+        STEPWISE_S | 5_000_000_000  | 5000
+        STEPWISE_S | 5_000_000_001  | 7000
+        STEPWISE_S | 20_000_000_000 | 7000
+        STEPWISE_S | 20_000_000_001 | 7000
+        STEPWISE_S | Long.MAX_VALUE | 7000
     }
 
     @Unroll
@@ -82,12 +86,12 @@ class TariffSpec extends Specification {
         tariff.getRateOfAdditionalServices(customerContract, trafficStats) == rate
 
         where:
-        additionalServices                                                                                                                | rate
-        []                                                                                                                                | 0
-        [AdditionalService.SAFE_COMPENSATION_SUPPORT]                                                                                     | 330
-        [AdditionalService.SAFE_REMOTE_SUPPORT]                                                                                           | 400
-        [AdditionalService.SAFE_NET_SECURITY_SUPPORT]                                                                                     | 500
-        [AdditionalService.SAFE_COMPENSATION_SUPPORT, AdditionalService.SAFE_REMOTE_SUPPORT, AdditionalService.SAFE_NET_SECURITY_SUPPORT] | 330 + 400 + 500
+        additionalServices                                                          | rate
+        []                                                                          | 0
+        [SAFE_COMPENSATION_SUPPORT]                                                 | 330
+        [SAFE_REMOTE_SUPPORT]                                                       | 400
+        [SAFE_NET_SECURITY_SUPPORT]                                                 | 500
+        [SAFE_COMPENSATION_SUPPORT, SAFE_REMOTE_SUPPORT, SAFE_NET_SECURITY_SUPPORT] | 330 + 400 + 500
     }
 
     void "月ごとの合計料金(税抜き)を計算する"() {
@@ -101,10 +105,10 @@ class TariffSpec extends Specification {
         tariff.getTotalRate(customerContract, trafficStats) == rate
 
         where:
-        callPlan                | dataPlan         | totalDataBytes | rate
-        CallPlan.BASIC_THE_NEXT | DataPlan.FLAT_LL | 0              | 4500 + 7000 + 300
-        CallPlan.BASIC_HENSHIN  | DataPlan.FLAT_LL | 0              | 3500 + 7000 + 300
-        CallPlan.BASIC_X        | DataPlan.FLAT_LL | 0              | 2500 + 7000 + 300
+        callPlan       | dataPlan | totalDataBytes | rate
+        BASIC_THE_NEXT | FLAT_LL  | 0              | 4500 + 7000 + 300
+        BASIC_HENSHIN  | FLAT_LL  | 0              | 3500 + 7000 + 300
+        BASIC_X        | FLAT_LL  | 0              | 2500 + 7000 + 300
         // TODO 組み合わせ書く
     }
 }
