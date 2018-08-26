@@ -5,16 +5,18 @@ import groovy.transform.TupleConstructor
 @TupleConstructor
 enum CallPlan {
 
-    BASIC_THE_NEXT("レッツゴーデベロッパー THE NEXT プラン"),
+    BASIC_THE_NEXT("レッツゴーデベロッパー THE NEXT プラン", 4500),
 
-    BASIC_HENSHIN("レッツゴーデベロッパー 変真 プラン"),
+    BASIC_HENSHIN("レッツゴーデベロッパー 変真 プラン", 3500),
 
-    BASIC_X("レッツゴーデベロッパー X プラン")
+    BASIC_X("レッツゴーデベロッパー X プラン", 2500)
 
     String name
 
+    Integer rate
+
     @Override
     String toString() {
-        name
+        "${name}($rate)"
     }
 }

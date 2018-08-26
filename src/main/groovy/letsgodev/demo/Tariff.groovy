@@ -7,16 +7,7 @@ class Tariff {
     }
 
     private BigDecimal getRateOfCallPlan(CustomerContract customerContract) {
-        switch (customerContract.callPlan) {
-            case CallPlan.BASIC_THE_NEXT:
-                return 4500
-            case CallPlan.BASIC_HENSHIN:
-                return 3500
-            case CallPlan.BASIC_X:
-                return 2500
-            default:
-                assert false
-        }
+        customerContract.callPlan.rate
     }
 
     private BigDecimal getInternetConnectionFee() {
