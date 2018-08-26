@@ -42,67 +42,7 @@ class TariffSpec extends Specification {
     }
 
     @Unroll
-    void "基本プランの#callPlanを当月の#contractDateに新規契約したとき、月額の基本料金は日割りされて#rate円になる"() {
-        given:
-        def customerContract = new CustomerContract(
-            callPlanContract: new CallPlanContract(
-                callPlan: callPlan,
-                contractDate: contractDate,
-                cancelDate: null,
-            )
-        )
-
-        and:
-        def trafficStats = new TrafficStats()
-
-        expect:
-        tariff.getRateOfCallPlan(cutoffDate_, customerContract, trafficStats) == rate
-
-        where:
-        callPlan       | contractDate                                            | rate
-        BASIC_THE_NEXT | cutoffDate_.withDayOfMonth(1)                           | 4500
-        BASIC_THE_NEXT | cutoffDate_.withDayOfMonth(2)                           | RateUtils.round(4500 / cutoffDate_.lengthOfMonth() * (cutoffDate_.lengthOfMonth() - 1))
-        BASIC_THE_NEXT | cutoffDate_.withDayOfMonth(cutoffDate_.lengthOfMonth()) | RateUtils.round(4500 / cutoffDate_.lengthOfMonth())
-        BASIC_HENSHIN  | cutoffDate_.withDayOfMonth(1)                           | 3500
-        BASIC_HENSHIN  | cutoffDate_.withDayOfMonth(2)                           | RateUtils.round(3500 / cutoffDate_.lengthOfMonth() * (cutoffDate_.lengthOfMonth() - 1))
-        BASIC_HENSHIN  | cutoffDate_.withDayOfMonth(cutoffDate_.lengthOfMonth()) | RateUtils.round(3500 / cutoffDate_.lengthOfMonth())
-        BASIC_X        | cutoffDate_.withDayOfMonth(1)                           | 2500
-        BASIC_X        | cutoffDate_.withDayOfMonth(2)                           | RateUtils.round(2500 / cutoffDate_.lengthOfMonth() * (cutoffDate_.lengthOfMonth() - 1))
-        BASIC_X        | cutoffDate_.withDayOfMonth(cutoffDate_.lengthOfMonth()) | RateUtils.round(2500 / cutoffDate_.lengthOfMonth())
-    }
-
-    @Unroll
-    void "基本プランの#callPlanを当月の#cancelDateに解約したとき、#cutoffDateの月額の基本料金は日割りされて#rate円になる"() {
-        given:
-        def customerContract = new CustomerContract(
-            callPlanContract: new CallPlanContract(
-                callPlan: callPlan,
-                contractDate: LocalDate.of(2018, 4, 1),
-                cancelDate: dateOf(cancelDate),
-            )
-        )
-
-        and:
-        def trafficStats = new TrafficStats()
-
-        expect:
-        tariff.getRateOfCallPlan(dateOf(cutoffDate), customerContract, trafficStats) == rate
-
-        where:
-        callPlan       | cutoffDate   | cancelDate   | rate
-        BASIC_THE_NEXT | "2018-08-31" | "2018-08-01" | RateUtils.round(4500 / 31)
-        BASIC_THE_NEXT | "2018-08-31" | "2018-08-02" | RateUtils.round(4500 / 31 * 2)
-        BASIC_THE_NEXT | "2018-08-31" | "2018-08-31" | 4500
-        BASIC_HENSHIN  | "2018-08-31" | "2018-08-01" | RateUtils.round(3500 / 31)
-        BASIC_HENSHIN  | "2018-08-31" | "2018-08-02" | RateUtils.round(3500 / 31 * 2)
-        BASIC_HENSHIN  | "2018-08-31" | "2018-08-31" | 3500
-        BASIC_X        | "2018-08-31" | "2018-08-01" | RateUtils.round(2500 / 31)
-        BASIC_X        | "2018-08-31" | "2018-08-02" | RateUtils.round(2500 / 31 * 2)
-        BASIC_X        | "2018-08-31" | "2018-08-31" | 2500
-    }
-
-    @Unroll
-    void "基本プランの#callPlanを#contractDateに新規契約して#cancelDateに解約したとき、#cutoffDateの月額の基本料金は日割りされて#rate円になる"() {
+    void "基本プランの#callPlanを#contractDateに新規契約し#cancelDescriptionたとき、#cutoffDateを締め日とした月額の基本料金は日割りされて#rate円になる"() {
         given:
         def customerContract = new CustomerContract(
             callPlanContract: new CallPlanContract(
@@ -120,12 +60,34 @@ class TariffSpec extends Specification {
 
         where:
         callPlan       | cutoffDate   | contractDate | cancelDate   | rate
+        BASIC_THE_NEXT | "2018-08-31" | "2018-08-01" | null         | 4500
+        BASIC_THE_NEXT | "2018-08-31" | "2018-08-02" | null         | RateUtils.round(4500 / 31 * 30)
+        BASIC_THE_NEXT | "2018-08-31" | "2018-08-31" | null         | RateUtils.round(4500 / 31)
+        BASIC_THE_NEXT | "2018-08-31" | "2018-04-01" | "2018-08-01" | RateUtils.round(4500 / 31)
+        BASIC_THE_NEXT | "2018-08-31" | "2018-04-01" | "2018-08-02" | RateUtils.round(4500 / 31 * 2)
+        BASIC_THE_NEXT | "2018-08-31" | "2018-04-01" | "2018-08-31" | 4500
         BASIC_THE_NEXT | "2018-08-31" | "2018-08-15" | "2018-08-15" | RateUtils.round(4500 / 31)
         BASIC_THE_NEXT | "2018-08-31" | "2018-08-15" | "2018-08-16" | RateUtils.round(4500 / 31 * 2)
+
+        BASIC_HENSHIN  | "2018-08-31" | "2018-08-01" | null         | 3500
+        BASIC_HENSHIN  | "2018-08-31" | "2018-08-02" | null         | RateUtils.round(3500 / 31 * 30)
+        BASIC_HENSHIN  | "2018-08-31" | "2018-08-31" | null         | RateUtils.round(3500 / 31)
+        BASIC_HENSHIN  | "2018-08-31" | "2018-04-01" | "2018-08-01" | RateUtils.round(3500 / 31)
+        BASIC_HENSHIN  | "2018-08-31" | "2018-04-01" | "2018-08-02" | RateUtils.round(3500 / 31 * 2)
+        BASIC_HENSHIN  | "2018-08-31" | "2018-04-01" | "2018-08-31" | 3500
         BASIC_HENSHIN  | "2018-08-31" | "2018-08-15" | "2018-08-15" | RateUtils.round(3500 / 31)
         BASIC_HENSHIN  | "2018-08-31" | "2018-08-15" | "2018-08-16" | RateUtils.round(3500 / 31 * 2)
+
+        BASIC_X        | "2018-08-31" | "2018-08-01" | null         | 2500
+        BASIC_X        | "2018-08-31" | "2018-08-02" | null         | RateUtils.round(2500 / 31 * 30)
+        BASIC_X        | "2018-08-31" | "2018-08-31" | null         | RateUtils.round(2500 / 31)
+        BASIC_X        | "2018-08-31" | "2018-04-01" | "2018-08-01" | RateUtils.round(2500 / 31)
+        BASIC_X        | "2018-08-31" | "2018-04-01" | "2018-08-02" | RateUtils.round(2500 / 31 * 2)
+        BASIC_X        | "2018-08-31" | "2018-04-01" | "2018-08-31" | 2500
         BASIC_X        | "2018-08-31" | "2018-08-15" | "2018-08-15" | RateUtils.round(2500 / 31)
         BASIC_X        | "2018-08-31" | "2018-08-15" | "2018-08-16" | RateUtils.round(2500 / 31 * 2)
+
+        cancelDescription = cancelDate ? "て${cancelDate}に解約し" : ""
     }
 
     @Unroll
