@@ -161,7 +161,7 @@ class TariffSpec extends Specification {
     // ※15 月途中での新規契約・解約の場合、日割り計算は行わず満額お支払頂きます。
 
     @Unroll
-    void "オプションとして#additionalServiceを契約しているとき、月途中での新規契約の場合、日割り計算せずに満額請求となる"() {
+    void "オプションとして#additionalServiceを月途中で新規契約した場合、日割り計算せずに満額請求となる"() {
         given:
         def additionalServiceContracts = []
 
