@@ -106,15 +106,7 @@ class TariffSpec extends Specification {
     // TODO
     void "オプションとして#additionalServiceを契約しているとき、初回加入時に限り最大2ヶ月無料(加入月とその翌月)となる"() {
         given:
-        def customerContract = new CustomerContract(
-            additionalServiceContracts: [
-                new AdditionalServiceContract(
-                    additionalService: additionalService,
-                    contractDate: contractDate,
-                    cancelDate: null,
-                )
-            ]
-        )
+        def customerContract = new CustomerContract(additionalServiceContracts: additionalServiceContracts)
 
         and:
         def trafficStats = new TrafficStats()
@@ -123,16 +115,24 @@ class TariffSpec extends Specification {
         tariff.getRateOfAdditionalServices(cutoffDate, customerContract, trafficStats) == rate
 
         where:
-        additionalService         | contractDate              | rate
-        SAFE_COMPENSATION_SUPPORT | LocalDate.of(2018, 8, 1)  | 0 // 加入月
-        SAFE_COMPENSATION_SUPPORT | LocalDate.of(2018, 8, 31) | 0 // 加入月
-        SAFE_COMPENSATION_SUPPORT | LocalDate.of(2018, 7, 1)  | 0 // 翌月
-        SAFE_COMPENSATION_SUPPORT | LocalDate.of(2018, 7, 31) | 0 // 翌月
-        SAFE_COMPENSATION_SUPPORT | LocalDate.of(2018, 6, 30) | 330 // 翌々月
-        SAFE_COMPENSATION_SUPPORT | LocalDate.of(2016, 1, 1)  | 330 // 昔々
+        additionalServiceContracts                                                           | rate
+        [newAdditionalServiceContract(SAFE_COMPENSATION_SUPPORT, LocalDate.of(2018, 8, 1))]  | 0 // 加入月
+        [newAdditionalServiceContract(SAFE_COMPENSATION_SUPPORT, LocalDate.of(2018, 8, 31))] | 0 // 加入月
+        [newAdditionalServiceContract(SAFE_COMPENSATION_SUPPORT, LocalDate.of(2018, 7, 1))]  | 0 // 翌月
+        [newAdditionalServiceContract(SAFE_COMPENSATION_SUPPORT, LocalDate.of(2018, 7, 31))] | 0 // 翌月
+        [newAdditionalServiceContract(SAFE_COMPENSATION_SUPPORT, LocalDate.of(2018, 6, 30))] | 330 // 翌々月
+        [newAdditionalServiceContract(SAFE_COMPENSATION_SUPPORT, LocalDate.of(2016, 1, 1))]  | 330 // 昔々
 //        [SAFE_COMPENSATION_SUPPORT] | 330
 //        [SAFE_REMOTE_SUPPORT] | 400
 //        [SAFE_NET_SECURITY_SUPPORT] | 500
+    }
+
+    private static AdditionalServiceContract newAdditionalServiceContract(additionalService, contractDate, cancelDate = null) {
+        new AdditionalServiceContract(
+            additionalService: additionalService,
+            contractDate: contractDate,
+            cancelDate: cancelDate,
+        )
     }
 
     void "月ごとの合計料金(税抜き)を計算する"() {
