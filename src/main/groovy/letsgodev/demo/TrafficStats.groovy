@@ -25,7 +25,7 @@ class TrafficStats {
      *   <li>等
      * </ul>
      */
-    long service0180CallSeconds
+    long serviceCallSeconds
 
     /** データ通信量(byte) */
     long totalDataBytes
