@@ -78,7 +78,7 @@ class TariffSpec extends Specification {
             callPlanContract: new CallPlanContract(
                 callPlan: callPlan,
                 contractDate: LocalDate.of(2018, 4, 1),
-                cancelDate: cancelDate,
+                cancelDate: dateOf(cancelDate),
             )
         )
 
@@ -86,19 +86,19 @@ class TariffSpec extends Specification {
         def trafficStats = new TrafficStats()
 
         expect:
-        tariff.getRateOfCallPlan(cutoffDate_, customerContract, trafficStats) == rate
+        tariff.getRateOfCallPlan(dateOf(cutoffDate), customerContract, trafficStats) == rate
 
         where:
-        callPlan       | cancelDate                                              | rate
-        BASIC_THE_NEXT | cutoffDate_.withDayOfMonth(1)                           | RateUtils.round(4500 / cutoffDate_.lengthOfMonth())
-        BASIC_THE_NEXT | cutoffDate_.withDayOfMonth(2)                           | RateUtils.round(4500 / cutoffDate_.lengthOfMonth() * 2)
-        BASIC_THE_NEXT | cutoffDate_.withDayOfMonth(cutoffDate_.lengthOfMonth()) | 4500
-        BASIC_HENSHIN  | cutoffDate_.withDayOfMonth(1)                           | RateUtils.round(3500 / cutoffDate_.lengthOfMonth())
-        BASIC_HENSHIN  | cutoffDate_.withDayOfMonth(2)                           | RateUtils.round(3500 / cutoffDate_.lengthOfMonth() * 2)
-        BASIC_HENSHIN  | cutoffDate_.withDayOfMonth(cutoffDate_.lengthOfMonth()) | 3500
-        BASIC_X        | cutoffDate_.withDayOfMonth(1)                           | RateUtils.round(2500 / cutoffDate_.lengthOfMonth())
-        BASIC_X        | cutoffDate_.withDayOfMonth(2)                           | RateUtils.round(2500 / cutoffDate_.lengthOfMonth() * 2)
-        BASIC_X        | cutoffDate_.withDayOfMonth(cutoffDate_.lengthOfMonth()) | 2500
+        callPlan       | cutoffDate   | cancelDate   | rate
+        BASIC_THE_NEXT | "2018-08-31" | "2018-08-01" | RateUtils.round(4500 / 31)
+        BASIC_THE_NEXT | "2018-08-31" | "2018-08-02" | RateUtils.round(4500 / 31 * 2)
+        BASIC_THE_NEXT | "2018-08-31" | "2018-08-31" | 4500
+        BASIC_HENSHIN  | "2018-08-31" | "2018-08-01" | RateUtils.round(3500 / 31)
+        BASIC_HENSHIN  | "2018-08-31" | "2018-08-02" | RateUtils.round(3500 / 31 * 2)
+        BASIC_HENSHIN  | "2018-08-31" | "2018-08-31" | 3500
+        BASIC_X        | "2018-08-31" | "2018-08-01" | RateUtils.round(2500 / 31)
+        BASIC_X        | "2018-08-31" | "2018-08-02" | RateUtils.round(2500 / 31 * 2)
+        BASIC_X        | "2018-08-31" | "2018-08-31" | 2500
     }
 
     @Unroll
