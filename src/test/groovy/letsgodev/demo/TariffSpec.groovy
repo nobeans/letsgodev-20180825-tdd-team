@@ -26,7 +26,7 @@ class TariffSpec extends Specification {
     }
 
     @Unroll
-    void "データ定額プランが#dataPlanのとき、データ通信量が#dataTrafficBytesバイトの場合、月額料金は#rate円になる"() {
+    void "データ定額プランが#dataPlanのとき、データ通信量が#totalDataBytesバイトの場合、月額料金は#rate円になる"() {
         given:
         def customerContract = new CustomerContract(dataPlan: dataPlan)
 
