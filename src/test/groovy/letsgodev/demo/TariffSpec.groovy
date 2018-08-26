@@ -1,6 +1,5 @@
 package letsgodev.demo
 
-
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -70,6 +69,48 @@ class TariffSpec extends Specification {
         BASIC_X        | cutoffDate.withDayOfMonth(1)                          | 2500
         BASIC_X        | cutoffDate.withDayOfMonth(2)                          | RateUtils.round(2500 / cutoffDate.lengthOfMonth() * (cutoffDate.lengthOfMonth() - 1))
         BASIC_X        | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | RateUtils.round(2500 / cutoffDate.lengthOfMonth())
+    }
+
+    @Unroll
+    void "インターネット接続料金を計算する"() {
+        given:
+        def customerContract = new CustomerContract()
+
+        and:
+        def trafficStats = new TrafficStats()
+
+        expect:
+        tariff.getRateOfInternetConnection(cutoffDate, customerContract, trafficStats) == 300
+    }
+
+    @Unroll
+    void "基本プランの#callPlanを当月の#contractDateに新規契約したとき、インターネット接続料金を計算する"() {
+        given:
+        def customerContract = new CustomerContract(
+            callPlanContract: new CallPlanContract(
+                callPlan: callPlan,
+                contractDate: contractDate,
+                cancelDate: null,
+            )
+        )
+
+        and:
+        def trafficStats = new TrafficStats()
+
+        expect:
+        tariff.getRateOfInternetConnection(cutoffDate, customerContract, trafficStats) == rate
+
+        where:
+        callPlan       | contractDate                                          | rate
+        BASIC_THE_NEXT | cutoffDate.withDayOfMonth(1)                          | 300
+        BASIC_THE_NEXT | cutoffDate.withDayOfMonth(2)                          | RateUtils.round(300 / cutoffDate.lengthOfMonth() * (cutoffDate.lengthOfMonth() - 1))
+        BASIC_THE_NEXT | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | RateUtils.round(300 / cutoffDate.lengthOfMonth())
+        BASIC_HENSHIN  | cutoffDate.withDayOfMonth(1)                          | 300
+        BASIC_HENSHIN  | cutoffDate.withDayOfMonth(2)                          | RateUtils.round(300 / cutoffDate.lengthOfMonth() * (cutoffDate.lengthOfMonth() - 1))
+        BASIC_HENSHIN  | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | RateUtils.round(300 / cutoffDate.lengthOfMonth())
+        BASIC_X        | cutoffDate.withDayOfMonth(1)                          | 300
+        BASIC_X        | cutoffDate.withDayOfMonth(2)                          | RateUtils.round(300 / cutoffDate.lengthOfMonth() * (cutoffDate.lengthOfMonth() - 1))
+        BASIC_X        | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | RateUtils.round(300 / cutoffDate.lengthOfMonth())
     }
 
     @Unroll
@@ -158,18 +199,6 @@ class TariffSpec extends Specification {
         STEPWISE_S | cutoffDate.withDayOfMonth(1)                          | Long.MAX_VALUE | 7000
         STEPWISE_S | cutoffDate.withDayOfMonth(2)                          | Long.MAX_VALUE | RateUtils.round(7000 / cutoffDate.lengthOfMonth() * (cutoffDate.lengthOfMonth() - 1))
         STEPWISE_S | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | Long.MAX_VALUE | RateUtils.round(7000 / cutoffDate.lengthOfMonth())
-    }
-
-    @Unroll
-    void "インターネット接続料金を計算する"() {
-        given:
-        def customerContract = new CustomerContract()
-
-        and:
-        def trafficStats = new TrafficStats()
-
-        expect:
-        tariff.getRateOfInternetConnection(cutoffDate, customerContract, trafficStats) == 300
     }
 
     @Unroll
