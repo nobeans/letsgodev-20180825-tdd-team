@@ -158,6 +158,42 @@ class TariffSpec extends Specification {
         SAFE_NET_SECURITY         | true         | cutoffDate                  | 500  | "加入月ではあるが初回ではない場合は有料となる"
     }
 
+    // ※15 月途中での新規契約・解約の場合、日割り計算は行わず満額お支払頂きます。
+
+    @Unroll
+    void "オプションとして#additionalServiceを契約しているとき、月途中での新規契約の場合、日割り計算せずに満額請求となる"() {
+        given:
+        def additionalServiceContracts = []
+
+        // 過去のオプション契約(これがない場合は、加入月＝無料となるため、※15の条件は適用外となる)
+        def oldDate = LocalDate.of(1970, 1, 1)
+        additionalServiceContracts << new AdditionalServiceContract(additionalService: additionalService, contractDate: oldDate, cancelDate: oldDate)
+
+        // 計算対象となるオプション契約
+        additionalServiceContracts << new AdditionalServiceContract(
+            additionalService: additionalService,
+            contractDate: eventDate,
+            cancelDate: null
+        )
+
+        def customerContract = new CustomerContract(additionalServiceContracts: additionalServiceContracts)
+
+        and:
+        def trafficStats = new TrafficStats()
+
+        expect:
+        tariff.getRateOfAdditionalServices(cutoffDate, customerContract, trafficStats) == rate
+
+        where:
+        additionalService         | eventDate                                             | rate
+        SAFE_COMPENSATION_SERVICE | cutoffDate.withDayOfMonth(1)                          | 330
+        SAFE_COMPENSATION_SERVICE | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | 330
+        SAFE_REMOTE_SUPPORT       | cutoffDate.withDayOfMonth(1)                          | 400
+        SAFE_REMOTE_SUPPORT       | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | 400
+        SAFE_NET_SECURITY         | cutoffDate.withDayOfMonth(1)                          | 500
+        SAFE_NET_SECURITY         | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | 500
+    }
+
     void "月ごとの合計料金(税抜き)を計算する"() {
         given:
         def customerContract = new CustomerContract(callPlan: callPlan, dataPlan: dataPlan)
