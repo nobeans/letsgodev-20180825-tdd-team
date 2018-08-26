@@ -1,6 +1,6 @@
 package letsgodev.demo
 
-import spock.lang.IgnoreRest
+
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -72,7 +72,6 @@ class TariffSpec extends Specification {
         BASIC_X        | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | RateUtils.round(2500 / cutoffDate.lengthOfMonth())
     }
 
-    @IgnoreRest
     @Unroll
     void "基本プランの#callPlanを当月の#cancelDateに解約したとき、月額の基本料金は日割りされて#rate円になる"() {
         given:

@@ -16,11 +16,11 @@ class Tariff {
     }
 
     private BigDecimal getRateOfCallPlan(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) {
-        RateUtils.prorateDaily(cutoffDate, customerContract.callPlanContract.contractDate, customerContract.callPlanContract.callPlan.rate(cutoffDate, customerContract, trafficStats))
+        RateUtils.prorateDaily(cutoffDate, customerContract.callPlanContract.contractDate, customerContract.callPlanContract.cancelDate, customerContract.callPlanContract.callPlan.rate(cutoffDate, customerContract, trafficStats))
     }
 
     private BigDecimal getRateOfInternetConnection(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) { // 統一感を出すためにあえてfeeではなくrateにした
-        RateUtils.prorateDaily(cutoffDate, customerContract.callPlanContract.contractDate, new InternetConnection().rate(cutoffDate, customerContract, trafficStats))
+        RateUtils.prorateDaily(cutoffDate, customerContract.callPlanContract.contractDate, customerContract.callPlanContract.cancelDate, new InternetConnection().rate(cutoffDate, customerContract, trafficStats))
     }
 
     private BigDecimal getSubtotalRateOfDataPlan(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) {
@@ -28,7 +28,7 @@ class Tariff {
     }
 
     private BigDecimal getRateOfDataPlan(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) {
-        RateUtils.prorateDaily(cutoffDate, customerContract.dataPlanContract.contractDate, customerContract.dataPlanContract.dataPlan.rate(cutoffDate, customerContract, trafficStats))
+        RateUtils.prorateDaily(cutoffDate, customerContract.dataPlanContract.contractDate, customerContract.dataPlanContract.cancelDate, customerContract.dataPlanContract.dataPlan.rate(cutoffDate, customerContract, trafficStats))
     }
 
     private BigDecimal getRateOfAdditionalServices(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) {
