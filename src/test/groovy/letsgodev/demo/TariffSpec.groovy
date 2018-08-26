@@ -91,7 +91,7 @@ class TariffSpec extends Specification {
         additionalServiceContracts.addAll(additionalServices.collect { AdditionalService additionalService ->
             new AdditionalServiceContract(
                 additionalService: additionalService,
-                contractDate: LocalDate.of(2018, 4, 1),
+                contractDate: LocalDate.of(2018, 4, 1), // ここでは初回加入月の無料計算の対象外として計算する
                 cancelDate: null
             )
         })
