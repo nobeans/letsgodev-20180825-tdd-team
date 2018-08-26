@@ -13,7 +13,7 @@ class TariffSpec extends Specification {
 
     Tariff tariff = new Tariff()
 
-    LocalDate cutoffDate = LocalDate.of(2018, 8, 30)
+    LocalDate cutoffDate = LocalDate.of(2018, 8, 31)
 
     @Unroll
     void "基本プランが#callPlanのとき、月額の基本料金は#rate円になる"() {
@@ -79,7 +79,11 @@ class TariffSpec extends Specification {
         given:
         def customerContract = new CustomerContract(
             additionalServiceContracts: additionalServices.collect { AdditionalService additionalService ->
-                new AdditionalServiceContract(additionalService: additionalService)
+                new AdditionalServiceContract(
+                    additionalService: additionalService,
+                    contractDate: LocalDate.of(2018, 4, 1),
+                    cancelDate: null
+                )
             }
         )
 
