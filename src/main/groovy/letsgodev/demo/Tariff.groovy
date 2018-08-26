@@ -2,11 +2,11 @@ package letsgodev.demo
 
 class Tariff {
 
-    BigDecimal getSubtotalPriceOfCall(CustomerContract customerContract) {
-        getPriceOfCallPlan(customerContract) + priceOfInternetFee
+    BigDecimal getSubtotalRateOfCall(CustomerContract customerContract) {
+        getRateOfCallPlan(customerContract) + internetConnectionFee
     }
 
-    private BigDecimal getPriceOfCallPlan(CustomerContract customerContract) {
+    private BigDecimal getRateOfCallPlan(CustomerContract customerContract) {
         switch (customerContract.callPlan) {
             case CallPlan.BASIC_THE_NEXT:
                 return 4500
@@ -19,15 +19,15 @@ class Tariff {
         }
     }
 
-    private BigDecimal getPriceOfInternetFee() {
+    private BigDecimal getInternetConnectionFee() {
         300
     }
 
-    BigDecimal getSubtotalPriceOfDataPlan(CustomerContract customerContract, long dataTrafficBytes) {
-        getPriceOfDataPlan(customerContract, dataTrafficBytes)
+    BigDecimal getRatePriceOfDataPlan(CustomerContract customerContract, long dataTrafficBytes) {
+        getRateOfDataPlan(customerContract, dataTrafficBytes)
     }
 
-    private BigDecimal getPriceOfDataPlan(CustomerContract customerContract, long dataTrafficBytes) {
+    private BigDecimal getRateOfDataPlan(CustomerContract customerContract, long dataTrafficBytes) {
         switch (customerContract.dataPlan) {
             case DataPlan.FLAT_LL:
                 return 7000
@@ -50,7 +50,7 @@ class Tariff {
         }
     }
 
-    BigDecimal getPriceOfAdditionalService(CustomerContract customerContract) {
+    BigDecimal getRateOfAdditionalService(CustomerContract customerContract) {
         customerContract.additionalServices.sum { AdditionalService additionalService ->
             switch (additionalService) {
                 case AdditionalService.SAFE_COMPENSATION_SUPPORT:
@@ -65,7 +65,7 @@ class Tariff {
         } as BigDecimal ?: 0
     }
 
-    BigDecimal getTotalPrice(CustomerContract customerContract, long dataTrafficBytes) {
-        getSubtotalPriceOfCall(customerContract) + getSubtotalPriceOfDataPlan(customerContract, dataTrafficBytes)
+    BigDecimal getTotalRate(CustomerContract customerContract, long dataTrafficBytes) {
+        getSubtotalRateOfCall(customerContract) + getRatePriceOfDataPlan(customerContract, dataTrafficBytes)
     }
 }

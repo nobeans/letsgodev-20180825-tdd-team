@@ -8,30 +8,30 @@ class TariffSpec extends Specification {
     Tariff tariff = new Tariff()
 
     @Unroll
-    void "基本プランが#callPlanのとき、月額の基本料金は#price円になる"() {
+    void "基本プランが#callPlanのとき、月額の基本料金は#rate円になる"() {
         given:
         def contract = new CustomerContract(callPlan: callPlan)
 
         expect:
-        tariff.getPriceOfCallPlan(contract) == price
+        tariff.getRateOfCallPlan(contract) == rate
 
         where:
-        callPlan                | price
+        callPlan                | rate
         CallPlan.BASIC_THE_NEXT | 4500
         CallPlan.BASIC_HENSHIN  | 3500
         CallPlan.BASIC_X        | 2500
     }
 
     @Unroll
-    void "データ定額プランが#dataPlanのとき、データ通信量が#dataTrafficBytesバイトの場合、月額料金は#price円になる"() {
+    void "データ定額プランが#dataPlanのとき、データ通信量が#dataTrafficBytesバイトの場合、月額料金は#rate円になる"() {
         given:
         def contract = new CustomerContract(dataPlan: dataPlan)
 
         expect:
-        tariff.getPriceOfDataPlan(contract, dataTrafficBytes) == price
+        tariff.getRateOfDataPlan(contract, dataTrafficBytes) == rate
 
         where:
-        dataPlan            | dataTrafficBytes | price
+        dataPlan            | dataTrafficBytes | rate
         DataPlan.FLAT_LL    | 0                | 7000
         DataPlan.FLAT_L     | 0                | 6000
         DataPlan.FLAT_M     | 0                | 4500
@@ -51,19 +51,19 @@ class TariffSpec extends Specification {
     @Unroll
     void "インターネット接続料金を計算する"() {
         expect:
-        tariff.priceOfInternetFee == 300
+        tariff.internetConnectionFee == 300
     }
 
     @Unroll
-    void "オプションとして#additionalServicesを契約しているとき、オプション料金が#price円になる"() {
+    void "オプションとして#additionalServicesを契約しているとき、オプション料金が#rate円になる"() {
         given:
         def contract = new CustomerContract(additionalServices: additionalServices)
 
         expect:
-        tariff.getPriceOfAdditionalService(contract) == price
+        tariff.getRateOfAdditionalService(contract) == rate
 
         where:
-        additionalServices                                                                                                                | price
+        additionalServices                                                                                                                | rate
         []                                                                                                                                | 0
         [AdditionalService.SAFE_COMPENSATION_SUPPORT]                                                                                     | 330
         [AdditionalService.SAFE_REMOTE_SUPPORT]                                                                                           | 400
@@ -76,10 +76,10 @@ class TariffSpec extends Specification {
         def contract = new CustomerContract(callPlan: callPlan, dataPlan: dataPlan)
 
         expect:
-        tariff.getTotalPrice(contract, dataTrafficBytes) == price
+        tariff.getTotalRate(contract, dataTrafficBytes) == rate
 
         where:
-        callPlan                | dataPlan         | dataTrafficBytes | price
+        callPlan                | dataPlan         | dataTrafficBytes | rate
         CallPlan.BASIC_THE_NEXT | DataPlan.FLAT_LL | 0                | 4500 + 7000 + 300
         CallPlan.BASIC_HENSHIN  | DataPlan.FLAT_LL | 0                | 3500 + 7000 + 300
         CallPlan.BASIC_X        | DataPlan.FLAT_LL | 0                | 2500 + 7000 + 300
