@@ -158,8 +158,6 @@ class TariffSpec extends Specification {
         SAFE_NET_SECURITY         | true         | cutoffDate                  | 500  | "加入月ではあるが初回ではない場合は有料となる"
     }
 
-    // ※15 月途中での新規契約・解約の場合、日割り計算は行わず満額お支払頂きます。
-
     @Unroll
     void "オプションとして#additionalServiceを月途中で新規契約した場合、日割り計算せずに満額請求となる"() {
         given:
