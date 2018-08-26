@@ -16,7 +16,7 @@ class Tariff {
     }
 
     private BigDecimal getRateOfCallPlan(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) {
-        prorateDaily(customerContract.callPlanContract.callPlan.rate(cutoffDate, customerContract, trafficStats), customerContract.callPlanContract.contractDate, cutoffDate)
+        RateUtils.prorateDaily(customerContract.callPlanContract.callPlan.rate(cutoffDate, customerContract, trafficStats), customerContract.callPlanContract.contractDate, cutoffDate)
     }
 
     private BigDecimal getRateOfInternetConnection(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) { // 統一感を出すためにあえてfeeではなくrateにした
@@ -28,16 +28,9 @@ class Tariff {
     }
 
     private BigDecimal getRateOfDataPlan(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) {
-        prorateDaily(customerContract.dataPlanContract.dataPlan.rate(cutoffDate, customerContract, trafficStats), customerContract.dataPlanContract.contractDate, cutoffDate)
+        RateUtils.prorateDaily(customerContract.dataPlanContract.dataPlan.rate(cutoffDate, customerContract, trafficStats), customerContract.dataPlanContract.contractDate, cutoffDate)
     }
 
-    static BigDecimal prorateDaily(BigDecimal fullRate, LocalDate contractDate, LocalDate cutoffDate) {
-        if (DateUtils.isSameMonth(cutoffDate, contractDate)) {
-            def ratePerDay = fullRate / cutoffDate.lengthOfMonth()
-            return RateUtils.round(ratePerDay * (contractDate.lengthOfMonth() - contractDate.dayOfMonth + 1))
-        }
-        fullRate
-    }
 
     private BigDecimal getRateOfAdditionalServices(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) {
         // 当月に解約されたオプション契約も請求対象となる。
