@@ -1,5 +1,6 @@
 package letsgodev.demo
 
+import spock.lang.IgnoreRest
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -263,7 +264,8 @@ class TariffSpec extends Specification {
     }
 
     @Unroll
-    void "オプションとして#additionalServiceを契約しているとき、#description"() {
+    @IgnoreRest
+    void "オプションとして#additionalServiceを#contractDateに契約したとき、#cutoffDateを締め日とした月額のオプション料金は#description"() {
         given:
         def additionalServiceContracts = []
 
@@ -290,21 +292,22 @@ class TariffSpec extends Specification {
 
         where:
         additionalService         | canceledOnce | cutoffDate   | contractDate | rate | description
-        SAFE_COMPENSATION_SERVICE | false        | "2018-08-31" | "2018-08-01" | 0    | "初回加入月は無料となる"
-        SAFE_COMPENSATION_SERVICE | false        | "2018-08-31" | "2018-07-01" | 0    | "初回加入月の翌月は無料となる"
-        SAFE_COMPENSATION_SERVICE | false        | "2018-08-31" | "2018-06-01" | 330  | "初回加入月の翌々月は有料となる"
-        SAFE_COMPENSATION_SERVICE | false        | "2018-08-31" | "1970-01-01" | 330  | "初回加入月のかなり昔は有料となる"
-        SAFE_COMPENSATION_SERVICE | true         | "2018-08-31" | "2018-08-01" | 330  | "加入月ではあるが初回ではない場合は有料となる"
+        SAFE_COMPENSATION_SERVICE | false        | "2018-08-31" | "2018-08-01" | 0    | "初回加入月のため無料となる"
+        SAFE_COMPENSATION_SERVICE | false        | "2018-08-31" | "2018-07-01" | 0    | "初回加入月の翌月のため無料となる"
+        SAFE_COMPENSATION_SERVICE | false        | "2018-08-31" | "2018-07-31" | 0    | "初回加入月の翌月のため無料となる"
+        SAFE_COMPENSATION_SERVICE | false        | "2018-08-31" | "2018-06-30" | 330  | "初回加入月の翌々月のため有料となる"
+        SAFE_COMPENSATION_SERVICE | false        | "2018-08-31" | "1970-01-01" | 330  | "初回加入月のかなり昔のため有料となる"
+        SAFE_COMPENSATION_SERVICE | true         | "2018-08-31" | "2018-08-01" | 330  | "加入月ではあるが初回ではないため有料となる"
         SAFE_REMOTE_SUPPORT       | false        | "2018-08-31" | "2018-08-01" | 0    | "初回加入月は無料となる"
-        SAFE_REMOTE_SUPPORT       | false        | "2018-08-31" | "2018-07-01" | 0    | "初回加入月の翌月は無料となる"
-        SAFE_REMOTE_SUPPORT       | false        | "2018-08-31" | "2018-06-01" | 400  | "初回加入月の翌々月は有料となる"
-        SAFE_REMOTE_SUPPORT       | false        | "2018-08-31" | "1970-01-01" | 400  | "初回加入月のかなり昔は有料となる"
-        SAFE_REMOTE_SUPPORT       | true         | "2018-08-31" | "2018-08-01" | 400  | "加入月ではあるが初回ではない場合は有料となる"
-        SAFE_NET_SECURITY         | false        | "2018-08-31" | "2018-08-01" | 0    | "初回加入月は無料となる"
-        SAFE_NET_SECURITY         | false        | "2018-08-31" | "2018-07-01" | 0    | "初回加入月の翌月は無料となる"
-        SAFE_NET_SECURITY         | false        | "2018-08-31" | "2018-06-01" | 500  | "初回加入月の翌々月は有料となる"
-        SAFE_NET_SECURITY         | false        | "2018-08-31" | "1970-01-01" | 500  | "初回加入月のかなり昔は有料となる"
-        SAFE_NET_SECURITY         | true         | "2018-08-31" | "2018-08-01" | 500  | "加入月ではあるが初回ではない場合は有料となる"
+        SAFE_REMOTE_SUPPORT       | false        | "2018-08-31" | "2018-07-01" | 0    | "初回加入月の翌月のため無料となる"
+        SAFE_REMOTE_SUPPORT       | false        | "2018-08-31" | "2018-06-01" | 400  | "初回加入月の翌々月のため有料となる"
+        SAFE_REMOTE_SUPPORT       | false        | "2018-08-31" | "1970-01-01" | 400  | "初回加入月のかなり昔のため有料となる"
+        SAFE_REMOTE_SUPPORT       | true         | "2018-08-31" | "2018-08-01" | 400  | "加入月ではあるが初回ではないため有料となる"
+        SAFE_NET_SECURITY         | false        | "2018-08-31" | "2018-08-01" | 0    | "初回加入月のため無料となる"
+        SAFE_NET_SECURITY         | false        | "2018-08-31" | "2018-07-01" | 0    | "初回加入月の翌月のため無料となる"
+        SAFE_NET_SECURITY         | false        | "2018-08-31" | "2018-06-01" | 500  | "初回加入月の翌々月のため有料となる"
+        SAFE_NET_SECURITY         | false        | "2018-08-31" | "1970-01-01" | 500  | "初回加入月のかなり昔のため有料となる"
+        SAFE_NET_SECURITY         | true         | "2018-08-31" | "2018-08-01" | 500  | "加入月ではあるが初回ではないため有料となる"
     }
 
     @Unroll
