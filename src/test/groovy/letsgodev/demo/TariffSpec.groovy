@@ -68,7 +68,6 @@ class TariffSpec extends Specification {
         BASIC_THE_NEXT | "2018-08-31" | "2018-04-01" | "2018-08-31" | 4500
         BASIC_THE_NEXT | "2018-08-31" | "2018-08-15" | "2018-08-15" | RateUtils.round(4500 / 31)
         BASIC_THE_NEXT | "2018-08-31" | "2018-08-15" | "2018-08-16" | RateUtils.round(4500 / 31 * 2)
-
         BASIC_HENSHIN  | "2018-08-31" | "2018-08-01" | null         | 3500
         BASIC_HENSHIN  | "2018-08-31" | "2018-08-02" | null         | RateUtils.round(3500 / 31 * 30)
         BASIC_HENSHIN  | "2018-08-31" | "2018-08-31" | null         | RateUtils.round(3500 / 31)
@@ -77,7 +76,6 @@ class TariffSpec extends Specification {
         BASIC_HENSHIN  | "2018-08-31" | "2018-04-01" | "2018-08-31" | 3500
         BASIC_HENSHIN  | "2018-08-31" | "2018-08-15" | "2018-08-15" | RateUtils.round(3500 / 31)
         BASIC_HENSHIN  | "2018-08-31" | "2018-08-15" | "2018-08-16" | RateUtils.round(3500 / 31 * 2)
-
         BASIC_X        | "2018-08-31" | "2018-08-01" | null         | 2500
         BASIC_X        | "2018-08-31" | "2018-08-02" | null         | RateUtils.round(2500 / 31 * 30)
         BASIC_X        | "2018-08-31" | "2018-08-31" | null         | RateUtils.round(2500 / 31)
