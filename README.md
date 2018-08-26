@@ -12,7 +12,7 @@ https://github.com/5000dai/free-style-battle
 
 ## 当日の最終成果物
 
-タグ 2018-08-25-that-day からどうぞ。
+[2018-08-25-that-day](https://github.com/nobeans/letsgodev-20180825-tdd-team/tree/2018-08-25-that-day)タグから発掘できます。
 
 
 ## 仕様に明示されてないけど想定してること
