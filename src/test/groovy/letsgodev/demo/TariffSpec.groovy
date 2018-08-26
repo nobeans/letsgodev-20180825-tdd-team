@@ -1,5 +1,6 @@
 package letsgodev.demo
 
+import spock.lang.IgnoreRest
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -74,7 +75,13 @@ class TariffSpec extends Specification {
     @Unroll
     void "データ定額プランが#dataPlanのとき、データ通信量が#totalDataBytesバイトの場合、月額料金は#rate円になる"() {
         given:
-        def customerContract = new CustomerContract(dataPlan: dataPlan)
+        def customerContract = new CustomerContract(
+            dataPlanContract: new DataPlanContract(
+                dataPlan: dataPlan,
+                contractDate: LocalDate.of(2018, 4, 1),
+                cancelDate: null,
+            )
+        )
 
         and:
         def trafficStats = new TrafficStats(totalDataBytes: totalDataBytes)
@@ -98,6 +105,56 @@ class TariffSpec extends Specification {
         STEPWISE_S | 20_000_000_000 | 7000
         STEPWISE_S | 20_000_000_001 | 7000
         STEPWISE_S | Long.MAX_VALUE | 7000
+    }
+
+    @IgnoreRest
+    @Unroll
+    void "データ定額プランの#dataPlanを当月の#contractDateに新規契約したとき、月額の基本料金は日割りされて#rate円になる"() {
+        given:
+        def customerContract = new CustomerContract(
+            dataPlanContract: new DataPlanContract(
+                dataPlan: dataPlan,
+                contractDate: contractDate,
+                cancelDate: null,
+            )
+        )
+
+        and:
+        def trafficStats = new TrafficStats()
+
+        expect:
+        tariff.getRateOfDataPlan(cutoffDate, customerContract, trafficStats) == rate
+
+        where:
+//        callPlan       | contractDate                                          | rate
+//        BASIC_THE_NEXT | cutoffDate.withDayOfMonth(1)                          | 4500
+//        BASIC_THE_NEXT | cutoffDate.withDayOfMonth(2)                          | RateUtils.round(4500 / cutoffDate.lengthOfMonth() * (cutoffDate.lengthOfMonth() - 1))
+//        BASIC_THE_NEXT | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | RateUtils.round(4500 / cutoffDate.lengthOfMonth())
+//        BASIC_HENSHIN  | cutoffDate.withDayOfMonth(1)                          | 3500
+//        BASIC_HENSHIN  | cutoffDate.withDayOfMonth(2)                          | RateUtils.round(3500 / cutoffDate.lengthOfMonth() * (cutoffDate.lengthOfMonth() - 1))
+//        BASIC_HENSHIN  | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | RateUtils.round(3500 / cutoffDate.lengthOfMonth())
+//        BASIC_X        | cutoffDate.withDayOfMonth(1)                          | 2500
+//        BASIC_X        | cutoffDate.withDayOfMonth(2)                          | RateUtils.round(2500 / cutoffDate.lengthOfMonth() * (cutoffDate.lengthOfMonth() - 1))
+//        BASIC_X        | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | RateUtils.round(2500 / cutoffDate.lengthOfMonth())
+
+        dataPlan       | contractDate                                          | totalDataBytes | rate
+        FLAT_LL        | cutoffDate.withDayOfMonth(1)                          | 0 | 7000
+        FLAT_LL        | cutoffDate.withDayOfMonth(2)                          | 0 | RateUtils.round(7000 / cutoffDate.lengthOfMonth() * (cutoffDate.lengthOfMonth() - 1))
+        FLAT_LL        | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | 0 | RateUtils.round(7000 / cutoffDate.lengthOfMonth())
+
+//        FLAT_L         | 0                                                     | 6000
+//        FLAT_M         | 0                                                     | 4500
+//        STEPWISE_S     | 0                                                     | 2900
+//        STEPWISE_S     | 0                                                     | 2900
+//        STEPWISE_S     | 1_000_000_000                                         | 2900
+//        STEPWISE_S     | 1_000_000_001                                         | 4000
+//        STEPWISE_S     | 3_000_000_000                                         | 4000
+//        STEPWISE_S     | 3_000_000_001                                         | 5000
+//        STEPWISE_S     | 5_000_000_000                                         | 5000
+//        STEPWISE_S     | 5_000_000_001                                         | 7000
+//        STEPWISE_S     | 20_000_000_000                                        | 7000
+//        STEPWISE_S     | 20_000_000_001                                        | 7000
+//        STEPWISE_S     | Long.MAX_VALUE                                        | 7000
     }
 
     @Unroll
@@ -267,7 +324,11 @@ class TariffSpec extends Specification {
                 contractDate: LocalDate.of(2018, 4, 1),
                 cancelDate: null,
             ),
-            dataPlan: dataPlan,
+            dataPlanContract: new DataPlanContract(
+                dataPlan: dataPlan,
+                contractDate: LocalDate.of(2018, 4, 1),
+                cancelDate: null,
+            )
         )
 
         and:

@@ -34,7 +34,7 @@ class Tariff {
     }
 
     private BigDecimal getRateOfDataPlan(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) {
-        customerContract.dataPlan.rate(cutoffDate, customerContract, trafficStats)
+        customerContract.dataPlanContract.dataPlan.rate(cutoffDate, customerContract, trafficStats)
     }
 
     private BigDecimal getRateOfAdditionalServices(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) {
