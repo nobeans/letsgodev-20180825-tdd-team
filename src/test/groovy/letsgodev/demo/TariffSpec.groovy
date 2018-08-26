@@ -96,7 +96,7 @@ class TariffSpec extends Specification {
         BASIC_HENSHIN  | "2018-08-31" | "2018-04-01" | null         | 300
         BASIC_X        | "2018-08-31" | "2018-04-01" | null         | 300
 
-        // 日割り有り
+        // 日割りあり
         BASIC_THE_NEXT | "2018-08-31" | "2018-08-01" | null         | 300
         BASIC_THE_NEXT | "2018-08-31" | "2018-08-02" | null         | RateUtils.round(300 / 31 * 30)
         BASIC_THE_NEXT | "2018-08-31" | "2018-08-31" | null         | RateUtils.round(300 / 31)
@@ -128,41 +128,7 @@ class TariffSpec extends Specification {
     }
 
     @Unroll
-    void "データ定額プランが#dataPlanのとき、データ通信量が#totalDataBytesバイトの場合、月額料金は#rate円になる"() {
-        given:
-        def customerContract = new CustomerContract(
-            dataPlanContract: new DataPlanContract(
-                dataPlan: dataPlan,
-                contractDate: LocalDate.of(2018, 4, 1),
-                cancelDate: null,
-            )
-        )
-
-        and:
-        def trafficStats = new TrafficStats(totalDataBytes: totalDataBytes)
-
-        expect:
-        tariff.getRateOfDataPlan(cutoffDate_, customerContract, trafficStats) == rate
-
-        where:
-        dataPlan   | totalDataBytes | rate
-        FLAT_LL    | 0              | 7000
-        FLAT_L     | 0              | 6000
-        FLAT_M     | 0              | 4500
-        STEPWISE_S | 0              | 2900
-        STEPWISE_S | 1_000_000_000  | 2900
-        STEPWISE_S | 1_000_000_001  | 4000
-        STEPWISE_S | 3_000_000_000  | 4000
-        STEPWISE_S | 3_000_000_001  | 5000
-        STEPWISE_S | 5_000_000_000  | 5000
-        STEPWISE_S | 5_000_000_001  | 7000
-        STEPWISE_S | 20_000_000_000 | 7000
-        STEPWISE_S | 20_000_000_001 | 7000
-        STEPWISE_S | Long.MAX_VALUE | 7000
-    }
-
-    @Unroll
-    void "データ定額プランの#dataPlanを#contractDateに新規契約し#cancelDescriptionたとき、データ通信量が#totalDataBytesバイトの場合、#cutoffDateを締め日とした月額の基本料金は日割りされて#rate円になる"() {
+    void "データ定額プランの#dataPlanを#contractDateに新規契約し#cancelDescriptionたとき、データ通信量が#totalDataBytesバイトの場合、#cutoffDateを締め日とした月額の基本料金は#proratedDescription#rate円になる"() {
         given:
         def customerContract = new CustomerContract(
             dataPlanContract: new DataPlanContract(
@@ -180,6 +146,21 @@ class TariffSpec extends Specification {
 
         where:
         dataPlan   | cutoffDate   | contractDate | cancelDate   | totalDataBytes | rate
+        // 日割りなし
+        FLAT_LL    | "2018-08-31" | "2018-04-01" | null         | 0              | 7000
+        FLAT_L     | "2018-08-31" | "2018-04-01" | null         | 0              | 6000
+        FLAT_M     | "2018-08-31" | "2018-04-01" | null         | 0              | 4500
+        STEPWISE_S | "2018-08-31" | "2018-04-01" | null         | 0              | 2900
+        STEPWISE_S | "2018-08-31" | "2018-04-01" | null         | 1_000_000_001  | 4000
+        STEPWISE_S | "2018-08-31" | "2018-04-01" | null         | 3_000_000_001  | 5000
+        STEPWISE_S | "2018-08-31" | "2018-04-01" | null         | 0              | 2900
+        STEPWISE_S | "2018-08-31" | "2018-04-01" | null         | 1_000_000_001  | 4000
+        STEPWISE_S | "2018-08-31" | "2018-04-01" | null         | 3_000_000_001  | 5000
+        STEPWISE_S | "2018-08-31" | "2018-04-01" | null         | 5_000_000_001  | 7000
+        STEPWISE_S | "2018-08-31" | "2018-04-01" | null         | 20_000_000_001 | 7000
+        STEPWISE_S | "2018-08-31" | "2018-04-01" | null         | Long.MAX_VALUE | 7000
+
+        // 日割りあり
         FLAT_LL    | "2018-08-31" | "2018-08-01" | null         | 0              | 7000
         FLAT_LL    | "2018-08-31" | "2018-08-02" | null         | 0              | RateUtils.round(7000 / 31 * 30)
         FLAT_LL    | "2018-08-31" | "2018-08-31" | null         | 0              | RateUtils.round(7000 / 31)
@@ -238,6 +219,8 @@ class TariffSpec extends Specification {
         STEPWISE_S | "2018-08-31" | "2018-08-15" | "2018-08-16" | 5_000_000_001  | RateUtils.round(7000 / 31 * 2)
 
         cancelDescription = cancelDate ? "て${cancelDate}に解約し" : ""
+
+        proratedDescription = DateUtils.isSameMonth(dateOf(cutoffDate), dateOf(contractDate)) || DateUtils.isSameMonth(dateOf(cutoffDate), dateOf(cancelDate)) ? "日割りされて" : ""
     }
 
     @Unroll
