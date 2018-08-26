@@ -114,7 +114,6 @@ class TariffSpec extends Specification {
     }
 
     @Unroll
-    // TODO
     void "オプションとして#additionalServiceを契約しているとき、#description"() {
         given:
         def additionalServiceContracts = []
@@ -157,14 +156,6 @@ class TariffSpec extends Specification {
         SAFE_NET_SECURITY_SUPPORT | false        | cutoffDate.minusMonths(2)   | 500  | "初回加入月の翌々月は有料となる"
         SAFE_NET_SECURITY_SUPPORT | false        | cutoffDate.minusMonths(999) | 500  | "初回加入月のかなり昔は有料となる"
         SAFE_NET_SECURITY_SUPPORT | true         | cutoffDate                  | 500  | "加入月ではあるが初回ではない場合は有料となる"
-    }
-
-    private static AdditionalServiceContract newAdditionalServiceContract(additionalService, contractDate, cancelDate = null) {
-        new AdditionalServiceContract(
-            additionalService: additionalService,
-            contractDate: contractDate,
-            cancelDate: cancelDate,
-        )
     }
 
     void "月ごとの合計料金(税抜き)を計算する"() {
