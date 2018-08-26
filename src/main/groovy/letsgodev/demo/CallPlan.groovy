@@ -21,7 +21,7 @@ enum CallPlan implements Rateable {
     }
 
     @Override
-    Integer getRate(CustomerContract customerContract, TrafficStats trafficStats) {
+    Integer rate(CustomerContract customerContract, TrafficStats trafficStats) {
         rate
     }
 }
