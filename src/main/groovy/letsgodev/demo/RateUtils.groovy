@@ -8,7 +8,7 @@ class RateUtils {
         calculatedRate.setScale(0, BigDecimal.ROUND_HALF_UP)
     }
 
-    static BigDecimal prorateDaily(BigDecimal fullRate, LocalDate contractDate, LocalDate cutoffDate) {
+    static BigDecimal prorateDaily(LocalDate cutoffDate, LocalDate contractDate, BigDecimal fullRate) {
         if (DateUtils.isSameMonth(cutoffDate, contractDate)) {
             def ratePerDay = fullRate / cutoffDate.lengthOfMonth()
             return round(ratePerDay * (contractDate.lengthOfMonth() - contractDate.dayOfMonth + 1))

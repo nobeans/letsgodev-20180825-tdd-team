@@ -16,7 +16,7 @@ class Tariff {
     }
 
     private BigDecimal getRateOfCallPlan(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) {
-        RateUtils.prorateDaily(customerContract.callPlanContract.callPlan.rate(cutoffDate, customerContract, trafficStats), customerContract.callPlanContract.contractDate, cutoffDate)
+        RateUtils.prorateDaily(cutoffDate, customerContract.callPlanContract.contractDate, customerContract.callPlanContract.callPlan.rate(cutoffDate, customerContract, trafficStats))
     }
 
     private BigDecimal getRateOfInternetConnection(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) { // 統一感を出すためにあえてfeeではなくrateにした
@@ -28,9 +28,8 @@ class Tariff {
     }
 
     private BigDecimal getRateOfDataPlan(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) {
-        RateUtils.prorateDaily(customerContract.dataPlanContract.dataPlan.rate(cutoffDate, customerContract, trafficStats), customerContract.dataPlanContract.contractDate, cutoffDate)
+        RateUtils.prorateDaily(cutoffDate, customerContract.dataPlanContract.contractDate, customerContract.dataPlanContract.dataPlan.rate(cutoffDate, customerContract, trafficStats))
     }
-
 
     private BigDecimal getRateOfAdditionalServices(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) {
         // 当月に解約されたオプション契約も請求対象となる。
