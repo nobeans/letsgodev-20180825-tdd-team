@@ -20,16 +20,7 @@ class Tariff {
 
     BigDecimal getRateOfAdditionalService(CustomerContract customerContract) {
         customerContract.additionalServices.sum { AdditionalService additionalService ->
-            switch (additionalService) {
-                case AdditionalService.SAFE_COMPENSATION_SUPPORT:
-                    return 330
-                case AdditionalService.SAFE_REMOTE_SUPPORT:
-                    return 400
-                case AdditionalService.SAFE_NET_SECURITY_SUPPORT:
-                    return 500
-                default:
-                    return 0
-            }
+            additionalService.getRate(customerContract, -1) // TODO
         } as BigDecimal ?: 0
     }
 

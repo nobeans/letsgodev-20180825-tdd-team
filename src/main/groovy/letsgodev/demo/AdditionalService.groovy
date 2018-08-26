@@ -1,16 +1,34 @@
 package letsgodev.demo
 
-
 import groovy.transform.TupleConstructor
 
 @TupleConstructor
 enum AdditionalService {
 
-    SAFE_COMPENSATION_SUPPORT("あんしん補償サービス"),
-    SAFE_REMOTE_SUPPORT("あんしん遠隔サポート"),
-    SAFE_NET_SECURITY_SUPPORT("あんしんネットセキュリティ")
+    SAFE_COMPENSATION_SUPPORT("あんしん補償サービス"){
+        @Override
+        Integer getRate(CustomerContract customerContract, long dataTrafficBytes) {
+            330
+        }
+    },
+
+    SAFE_REMOTE_SUPPORT("あんしん遠隔サポート"){
+        @Override
+        Integer getRate(CustomerContract customerContract, long dataTrafficBytes) {
+            400
+        }
+    },
+
+    SAFE_NET_SECURITY_SUPPORT("あんしんネットセキュリティ"){
+        @Override
+        Integer getRate(CustomerContract customerContract, long dataTrafficBytes) {
+            500
+        }
+    }
 
     String name
+
+    abstract Integer getRate(CustomerContract customerContract, long dataTrafficBytes)
 
     @Override
     String toString() {
