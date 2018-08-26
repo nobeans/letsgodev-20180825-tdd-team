@@ -9,7 +9,8 @@ class Tariff {
     }
 
     private BigDecimal getSubtotalRateOfCallPlan(CustomerContract customerContract, TrafficStats trafficStats) {
-        getRateOfCallPlan(customerContract, trafficStats) + getRateOfInternetConnection(customerContract, trafficStats)
+        getRateOfCallPlan(customerContract, trafficStats) +
+            getRateOfInternetConnection(customerContract, trafficStats)
     }
 
     private BigDecimal getRateOfCallPlan(CustomerContract customerContract, TrafficStats trafficStats) {
