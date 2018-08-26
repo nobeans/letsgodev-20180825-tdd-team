@@ -1,6 +1,5 @@
 package letsgodev.demo
 
-import spock.lang.IgnoreRest
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -225,7 +224,6 @@ class TariffSpec extends Specification {
     }
 
     @Unroll
-    @IgnoreRest
     void "オプションとして#additionalServicesを#contractDateに新規契約してたとき、#cutoffDateを締め日とした月額のオプション料金は#rate円になる"() {
         given:
         def additionalServiceContracts = []
@@ -266,8 +264,7 @@ class TariffSpec extends Specification {
     }
 
     @Unroll
-    @IgnoreRest
-    void "オプションとして#additionalServiceを#contractDateに新規契約し#cancelDescriptionたとき、#cutoffDateを締め日とした月額のオプション料金は#description#rate円になる"() {
+    void "オプションとして#cancelOnceDescription#additionalServiceを#contractDateに#contractDescriptionし#cancelDescriptionたとき、#cutoffDateを締め日とした月額のオプション料金は#description#rate円になる"() {
         given:
         def additionalServiceContracts = []
 
@@ -299,55 +296,35 @@ class TariffSpec extends Specification {
         SAFE_COMPENSATION_SERVICE | false        | "2018-08-31" | "2018-06-30" | null         | 330  | ""
         SAFE_COMPENSATION_SERVICE | false        | "2018-08-31" | "1970-01-01" | null         | 330  | ""
         SAFE_COMPENSATION_SERVICE | true         | "2018-08-31" | "2018-08-01" | null         | 330  | "加入月ではあるが初回ではないため"
-        SAFE_COMPENSATION_SERVICE | true         | "2018-08-31" | "2018-08-01" | "2018-08-01" | 330  | "日割り計算せずに満額請求となり"
-        SAFE_COMPENSATION_SERVICE | true         | "2018-08-31" | "2018-08-01" | "2018-08-31" | 330  | "日割り計算せずに満額請求となり"
+        SAFE_COMPENSATION_SERVICE | true         | "2018-08-31" | "2018-08-15" | null         | 330  | "月途中であっても日割り計算せずに満額請求となり"
+        SAFE_COMPENSATION_SERVICE | true         | "2018-08-31" | "2018-08-31" | null         | 330  | "月途中であっても日割り計算せずに満額請求となり"
+        SAFE_COMPENSATION_SERVICE | false        | "2018-08-31" | "2018-04-01" | "2018-08-01" | 330  | "月途中であっても日割り計算せずに満額請求となり"
+        SAFE_COMPENSATION_SERVICE | false        | "2018-08-31" | "2018-04-01" | "2018-08-15" | 330  | "月途中であっても日割り計算せずに満額請求となり"
+        SAFE_COMPENSATION_SERVICE | false        | "2018-08-31" | "2018-04-01" | "2018-08-31" | 330  | ""
         SAFE_REMOTE_SUPPORT       | false        | "2018-08-31" | "2018-08-01" | null         | 0    | "初回加入月のため"
         SAFE_REMOTE_SUPPORT       | false        | "2018-08-31" | "2018-07-01" | null         | 0    | "初回加入月の翌月のため"
         SAFE_REMOTE_SUPPORT       | false        | "2018-08-31" | "2018-06-30" | null         | 400  | ""
         SAFE_REMOTE_SUPPORT       | false        | "2018-08-31" | "1970-01-01" | null         | 400  | ""
         SAFE_REMOTE_SUPPORT       | true         | "2018-08-31" | "2018-08-01" | null         | 400  | "加入月ではあるが初回ではないため"
-        SAFE_REMOTE_SUPPORT       | true         | "2018-08-31" | "2018-08-01" | "2018-08-01" | 400  | "日割り計算せずに満額請求となり"
-        SAFE_REMOTE_SUPPORT       | true         | "2018-08-31" | "2018-08-01" | "2018-08-31" | 400  | "日割り計算せずに満額請求となり"
+        SAFE_REMOTE_SUPPORT       | true         | "2018-08-31" | "2018-08-15" | null         | 400  | "月途中であっても日割り計算せずに満額請求となり"
+        SAFE_REMOTE_SUPPORT       | true         | "2018-08-31" | "2018-08-31" | null         | 400  | "月途中であっても日割り計算せずに満額請求となり"
+        SAFE_REMOTE_SUPPORT       | false        | "2018-08-31" | "2018-04-01" | "2018-08-01" | 400  | "月途中であっても日割り計算せずに満額請求となり"
+        SAFE_REMOTE_SUPPORT       | false        | "2018-08-31" | "2018-04-01" | "2018-08-15" | 400  | "月途中であっても日割り計算せずに満額請求となり"
+        SAFE_REMOTE_SUPPORT       | false        | "2018-08-31" | "2018-04-01" | "2018-08-31" | 400  | ""
         SAFE_NET_SECURITY         | false        | "2018-08-31" | "2018-08-01" | null         | 0    | "初回加入月のため"
         SAFE_NET_SECURITY         | false        | "2018-08-31" | "2018-07-01" | null         | 0    | "初回加入月の翌月のため"
         SAFE_NET_SECURITY         | false        | "2018-08-31" | "2018-06-30" | null         | 500  | ""
         SAFE_NET_SECURITY         | false        | "2018-08-31" | "1970-01-01" | null         | 500  | ""
         SAFE_NET_SECURITY         | true         | "2018-08-31" | "2018-08-01" | null         | 500  | "加入月ではあるが初回ではないため"
-        SAFE_NET_SECURITY         | true         | "2018-08-31" | "2018-08-01" | "2018-08-01" | 500  | "日割り計算せずに満額請求となり"
-        SAFE_NET_SECURITY         | true         | "2018-08-31" | "2018-08-01" | "2018-08-31" | 500  | "日割り計算せずに満額請求となり"
+        SAFE_NET_SECURITY         | true         | "2018-08-31" | "2018-08-15" | null         | 500  | "月途中であっても日割り計算せずに満額請求となり"
+        SAFE_NET_SECURITY         | true         | "2018-08-31" | "2018-08-31" | null         | 500  | "月途中であっても日割り計算せずに満額請求となり"
+        SAFE_NET_SECURITY         | false        | "2018-08-31" | "2018-04-01" | "2018-08-01" | 500  | "月途中であっても日割り計算せずに満額請求となり"
+        SAFE_NET_SECURITY         | false        | "2018-08-31" | "2018-04-01" | "2018-08-15" | 500  | "月途中であっても日割り計算せずに満額請求となり"
+        SAFE_NET_SECURITY         | false        | "2018-08-31" | "2018-04-01" | "2018-08-31" | 500  | ""
 
+        cancelOnceDescription = canceledOnce ? "以前に一度解約した" : ""
+        contractDescription = canceledOnce ? "再度契約" : "新規契約"
         cancelDescription = cancelDate ? "て${cancelDate}に解約し" : ""
-    }
-
-    @Unroll
-    void "オプションとして#additionalServiceを月途中で解約した場合、日割り計算せずに満額請求となる"() {
-        given:
-        def additionalServiceContracts = []
-
-        // 過去のオプション契約(これがない場合は、加入月＝無料となるため、※15の条件は適用外となる)
-        // 計算対象となるオプション契約
-        additionalServiceContracts << new AdditionalServiceContract(
-            additionalService: additionalService,
-            contractDate: LocalDate.of(1970, 1, 1),
-            cancelDate: cancelDate,
-        )
-
-        def customerContract = new CustomerContract(additionalServiceContracts: additionalServiceContracts)
-
-        and:
-        def trafficStats = new TrafficStats()
-
-        expect:
-        tariff.getRateOfAdditionalServices(cutoffDate_, customerContract, trafficStats) == rate
-
-        where:
-        additionalService         | cancelDate                                              | rate
-        SAFE_COMPENSATION_SERVICE | cutoffDate_.withDayOfMonth(1)                           | 330
-        SAFE_COMPENSATION_SERVICE | cutoffDate_.withDayOfMonth(cutoffDate_.lengthOfMonth()) | 330
-        SAFE_REMOTE_SUPPORT       | cutoffDate_.withDayOfMonth(1)                           | 400
-        SAFE_REMOTE_SUPPORT       | cutoffDate_.withDayOfMonth(cutoffDate_.lengthOfMonth()) | 400
-        SAFE_NET_SECURITY         | cutoffDate_.withDayOfMonth(1)                           | 500
-        SAFE_NET_SECURITY         | cutoffDate_.withDayOfMonth(cutoffDate_.lengthOfMonth()) | 500
     }
 
     void "月ごとの合計料金(税抜き)を計算する"() {
