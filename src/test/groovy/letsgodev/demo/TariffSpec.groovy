@@ -1,5 +1,6 @@
 package letsgodev.demo
 
+import spock.lang.IgnoreRest
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -69,6 +70,37 @@ class TariffSpec extends Specification {
         BASIC_X        | cutoffDate.withDayOfMonth(1)                          | 2500
         BASIC_X        | cutoffDate.withDayOfMonth(2)                          | RateUtils.round(2500 / cutoffDate.lengthOfMonth() * (cutoffDate.lengthOfMonth() - 1))
         BASIC_X        | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | RateUtils.round(2500 / cutoffDate.lengthOfMonth())
+    }
+
+    @IgnoreRest
+    @Unroll
+    void "基本プランの#callPlanを当月の#cancelDateに解約したとき、月額の基本料金は日割りされて#rate円になる"() {
+        given:
+        def customerContract = new CustomerContract(
+            callPlanContract: new CallPlanContract(
+                callPlan: callPlan,
+                contractDate: LocalDate.of(2018, 4, 1),
+                cancelDate: cancelDate,
+            )
+        )
+
+        and:
+        def trafficStats = new TrafficStats()
+
+        expect:
+        tariff.getRateOfCallPlan(cutoffDate, customerContract, trafficStats) == rate
+
+        where:
+        callPlan       | cancelDate                                            | rate
+        BASIC_THE_NEXT | cutoffDate.withDayOfMonth(1)                          | RateUtils.round(4500 / cutoffDate.lengthOfMonth())
+        BASIC_THE_NEXT | cutoffDate.withDayOfMonth(2)                          | RateUtils.round(4500 / cutoffDate.lengthOfMonth() * 2)
+        BASIC_THE_NEXT | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | 4500
+        BASIC_HENSHIN  | cutoffDate.withDayOfMonth(1)                          | RateUtils.round(3500 / cutoffDate.lengthOfMonth())
+        BASIC_HENSHIN  | cutoffDate.withDayOfMonth(2)                          | RateUtils.round(3500 / cutoffDate.lengthOfMonth() * 2)
+        BASIC_HENSHIN  | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | 3500
+        BASIC_X        | cutoffDate.withDayOfMonth(1)                          | RateUtils.round(2500 / cutoffDate.lengthOfMonth())
+        BASIC_X        | cutoffDate.withDayOfMonth(2)                          | RateUtils.round(2500 / cutoffDate.lengthOfMonth() * 2)
+        BASIC_X        | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | 2500
     }
 
     @Unroll
