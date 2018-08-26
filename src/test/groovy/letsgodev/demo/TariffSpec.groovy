@@ -195,9 +195,7 @@ class TariffSpec extends Specification {
         STEPWISE_S | "2018-08-31" | "2018-08-15" | "2018-08-16" | 5_000_000_001  | RateUtils.round(7000 / 31 * 2)
 
         cancelDescription = cancelDate ? "て${cancelDate}に解約し" : ""
-
         totalDataBytesDescription = dataPlan == STEPWISE_S ? "データ通信量が${totalDataBytes}バイトの場合、" : ""
-
         proratedDescription = DateUtils.isSameMonth(dateOf(cutoffDate), dateOf(contractDate)) || DateUtils.isSameMonth(dateOf(cutoffDate), dateOf(cancelDate)) ? "日割りされて" : ""
     }
 
