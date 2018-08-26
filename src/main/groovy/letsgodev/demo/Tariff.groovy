@@ -30,8 +30,8 @@ class Tariff {
     }
 
     private BigDecimal getRateOfAdditionalServices(CustomerContract customerContract, TrafficStats trafficStats) {
-        customerContract.additionalServices?.sum { AdditionalService additionalService ->
-            additionalService.rate(customerContract, trafficStats)
+        customerContract.additionalServiceContracts?.sum { AdditionalServiceContract additionalServiceContract ->
+            additionalServiceContract.additionalService.rate(customerContract, trafficStats)
         } as BigDecimal ?: 0
     }
 }
