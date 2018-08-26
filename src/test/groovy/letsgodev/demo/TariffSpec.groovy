@@ -1,5 +1,6 @@
 package letsgodev.demo
 
+import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -11,9 +12,10 @@ import static letsgodev.demo.DataPlan.*
 
 class TariffSpec extends Specification {
 
-    Tariff tariff = new Tariff()
-
+    @Shared
     LocalDate cutoffDate = LocalDate.of(2018, 8, 31)
+
+    Tariff tariff = new Tariff()
 
     @Unroll
     void "基本プランが#callPlanのとき、月額の基本料金は#rate円になる"() {
@@ -104,9 +106,17 @@ class TariffSpec extends Specification {
 
     @Unroll
     // TODO
-    void "オプションとして#additionalServiceを契約しているとき、初回加入時に限り最大2ヶ月無料(加入月とその翌月)となる"() {
+    void "オプションとして#additionalServiceを契約しているとき、#description"() {
         given:
-        def customerContract = new CustomerContract(additionalServiceContracts: additionalServiceContracts)
+        def customerContract = new CustomerContract(
+            additionalServiceContracts: [
+                new AdditionalServiceContract(
+                    additionalService: additionalService,
+                    contractDate: contractDate,
+                    cancelDate: null
+                )
+            ]
+        )
 
         and:
         def trafficStats = new TrafficStats()
@@ -115,13 +125,12 @@ class TariffSpec extends Specification {
         tariff.getRateOfAdditionalServices(cutoffDate, customerContract, trafficStats) == rate
 
         where:
-        additionalServiceContracts                                                           | rate
-        [newAdditionalServiceContract(SAFE_COMPENSATION_SUPPORT, LocalDate.of(2018, 8, 1))]  | 0 // 加入月
-        [newAdditionalServiceContract(SAFE_COMPENSATION_SUPPORT, LocalDate.of(2018, 8, 31))] | 0 // 加入月
-        [newAdditionalServiceContract(SAFE_COMPENSATION_SUPPORT, LocalDate.of(2018, 7, 1))]  | 0 // 翌月
-        [newAdditionalServiceContract(SAFE_COMPENSATION_SUPPORT, LocalDate.of(2018, 7, 31))] | 0 // 翌月
-        [newAdditionalServiceContract(SAFE_COMPENSATION_SUPPORT, LocalDate.of(2018, 6, 30))] | 330 // 翌々月
-        [newAdditionalServiceContract(SAFE_COMPENSATION_SUPPORT, LocalDate.of(2016, 1, 1))]  | 330 // 昔々
+        additionalService         | canceledOnce | contractDate                | rate | description
+        SAFE_COMPENSATION_SUPPORT | false        | cutoffDate                  | 0    | "初回加入月は無料となる"
+        SAFE_COMPENSATION_SUPPORT | false        | cutoffDate.minusMonths(1)   | 0    | "初回加入月の翌月は無料となる"
+        SAFE_COMPENSATION_SUPPORT | false        | cutoffDate.minusMonths(2)   | 330  | "初回加入月の翌々月は有料となる"
+        SAFE_COMPENSATION_SUPPORT | false        | cutoffDate.minusMonths(999) | 330  | "初回加入月のかなり昔月は有料となる"
+        SAFE_COMPENSATION_SUPPORT | true         | cutoffDate                  | 330  | "加入月ではあるが初回ではない場合は有料となる"
 //        [SAFE_COMPENSATION_SUPPORT] | 330
 //        [SAFE_REMOTE_SUPPORT] | 400
 //        [SAFE_NET_SECURITY_SUPPORT] | 500
