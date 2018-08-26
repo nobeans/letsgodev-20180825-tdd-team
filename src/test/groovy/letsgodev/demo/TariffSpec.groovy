@@ -190,27 +190,15 @@ class TariffSpec extends Specification {
         STEPWISE_S | cutoffDate.withDayOfMonth(1)                          | 0              | 2900
         STEPWISE_S | cutoffDate.withDayOfMonth(2)                          | 0              | RateUtils.round(2900 / cutoffDate.lengthOfMonth() * (cutoffDate.lengthOfMonth() - 1))
         STEPWISE_S | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | 0              | RateUtils.round(2900 / cutoffDate.lengthOfMonth())
-        STEPWISE_S | cutoffDate.withDayOfMonth(1)                          | 1_000_000_000  | 2900
-        STEPWISE_S | cutoffDate.withDayOfMonth(2)                          | 1_000_000_000  | RateUtils.round(2900 / cutoffDate.lengthOfMonth() * (cutoffDate.lengthOfMonth() - 1))
-        STEPWISE_S | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | 1_000_000_000  | RateUtils.round(2900 / cutoffDate.lengthOfMonth())
         STEPWISE_S | cutoffDate.withDayOfMonth(1)                          | 1_000_000_001  | 4000
         STEPWISE_S | cutoffDate.withDayOfMonth(2)                          | 1_000_000_001  | RateUtils.round(4000 / cutoffDate.lengthOfMonth() * (cutoffDate.lengthOfMonth() - 1))
         STEPWISE_S | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | 1_000_000_001  | RateUtils.round(4000 / cutoffDate.lengthOfMonth())
-        STEPWISE_S | cutoffDate.withDayOfMonth(1)                          | 3_000_000_000  | 4000
-        STEPWISE_S | cutoffDate.withDayOfMonth(2)                          | 3_000_000_000  | RateUtils.round(4000 / cutoffDate.lengthOfMonth() * (cutoffDate.lengthOfMonth() - 1))
-        STEPWISE_S | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | 3_000_000_000  | RateUtils.round(4000 / cutoffDate.lengthOfMonth())
         STEPWISE_S | cutoffDate.withDayOfMonth(1)                          | 3_000_000_001  | 5000
         STEPWISE_S | cutoffDate.withDayOfMonth(2)                          | 3_000_000_001  | RateUtils.round(5000 / cutoffDate.lengthOfMonth() * (cutoffDate.lengthOfMonth() - 1))
         STEPWISE_S | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | 3_000_000_001  | RateUtils.round(5000 / cutoffDate.lengthOfMonth())
-        STEPWISE_S | cutoffDate.withDayOfMonth(1)                          | 5_000_000_000  | 5000
-        STEPWISE_S | cutoffDate.withDayOfMonth(2)                          | 5_000_000_000  | RateUtils.round(5000 / cutoffDate.lengthOfMonth() * (cutoffDate.lengthOfMonth() - 1))
-        STEPWISE_S | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | 5_000_000_000  | RateUtils.round(5000 / cutoffDate.lengthOfMonth())
         STEPWISE_S | cutoffDate.withDayOfMonth(1)                          | 5_000_000_001  | 7000
         STEPWISE_S | cutoffDate.withDayOfMonth(2)                          | 5_000_000_001  | RateUtils.round(7000 / cutoffDate.lengthOfMonth() * (cutoffDate.lengthOfMonth() - 1))
         STEPWISE_S | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | 5_000_000_001  | RateUtils.round(7000 / cutoffDate.lengthOfMonth())
-        STEPWISE_S | cutoffDate.withDayOfMonth(1)                          | Long.MAX_VALUE | 7000
-        STEPWISE_S | cutoffDate.withDayOfMonth(2)                          | Long.MAX_VALUE | RateUtils.round(7000 / cutoffDate.lengthOfMonth() * (cutoffDate.lengthOfMonth() - 1))
-        STEPWISE_S | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | Long.MAX_VALUE | RateUtils.round(7000 / cutoffDate.lengthOfMonth())
     }
 
     @Unroll
