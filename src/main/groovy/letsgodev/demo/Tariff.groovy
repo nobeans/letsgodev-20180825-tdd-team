@@ -9,15 +9,15 @@ class Tariff {
     }
 
     private BigDecimal getSubtotalRateOfCallPlan(CustomerContract customerContract, TrafficStats trafficStats) {
-        getRateOfCallPlan(customerContract, trafficStats) + internetConnectionFee
+        getRateOfCallPlan(customerContract, trafficStats) + getRateOfInternetConnection(customerContract, trafficStats)
     }
 
     private BigDecimal getRateOfCallPlan(CustomerContract customerContract, TrafficStats trafficStats) {
         customerContract.callPlan.rate(customerContract, trafficStats)
     }
 
-    private BigDecimal getInternetConnectionFee() {
-        new InternetConnection().fee
+    private BigDecimal getRateOfInternetConnection(CustomerContract customerContract, TrafficStats trafficStats) { // 統一感を出すためにあえてfeeではなくrateにした
+        new InternetConnection().rate(customerContract, trafficStats)
     }
 
     private BigDecimal getSubtotalRateOfDataPlan(CustomerContract customerContract, TrafficStats trafficStats) {

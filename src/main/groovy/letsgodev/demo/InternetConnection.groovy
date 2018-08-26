@@ -1,8 +1,9 @@
 package letsgodev.demo
 
-class InternetConnection {
+class InternetConnection implements Rateable {
 
-    BigDecimal getFee() {
+    @Override
+    Integer rate(CustomerContract customerContract, TrafficStats trafficStats) {
         300
     }
 }
