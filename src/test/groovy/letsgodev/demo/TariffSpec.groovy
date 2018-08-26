@@ -1,6 +1,5 @@
 package letsgodev.demo
 
-
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -58,7 +57,6 @@ class TariffSpec extends Specification {
 
         expect:
         tariff.getRateOfCallPlan(cutoffDate, customerContract, trafficStats) == rate
-
 
         where:
         callPlan       | contractDate                                          | rate
