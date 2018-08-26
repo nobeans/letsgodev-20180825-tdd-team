@@ -12,7 +12,7 @@ https://github.com/5000dai/free-style-battle
 
 ## 当日の最終成果物
 
-[2018-08-25-that-day](https://github.com/nobeans/letsgodev-20180825-tdd-team/tree/2018-08-25-that-day)タグから発掘できます。
+`master`は個人でどんどん実装を進めてしまってるので、当時の最終成果物の状態は[2018-08-25-that-day](https://github.com/nobeans/letsgodev-20180825-tdd-team/tree/2018-08-25-that-day)タグから発掘してください。
 
 
 ## 仕様に明示されてないけど想定してること
