@@ -11,7 +11,7 @@ class Tariff {
     }
 
     private BigDecimal getInternetConnectionFee() {
-        300
+        new InternetConnection().fee
     }
 
     BigDecimal getRateOfDataPlan(CustomerContract customerContract, long dataTrafficBytes) {
