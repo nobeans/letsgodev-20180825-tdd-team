@@ -33,7 +33,7 @@ https://github.com/5000dai/free-style-battle
 
 ## テストの実行方法
 
-Javaさえインストールされていれば、Gradle Wrapperを使って簡単に実行できます。
+Javaがインストールされていて、かつ、インターネットに接続できれば、Gradle Wrapperを使って簡単に実行できます。
 
 ```
 # Linux / macOS
