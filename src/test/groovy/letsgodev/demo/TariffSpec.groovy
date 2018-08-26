@@ -72,19 +72,31 @@ class TariffSpec extends Specification {
     }
 
     @Unroll
-    void "インターネット接続料金を計算する"() {
+    void "基本プランが#callPlanのとき、インターネット接続料金は#rate円になる"() {
         given:
-        def customerContract = new CustomerContract()
+        def customerContract = new CustomerContract(
+            callPlanContract: new CallPlanContract(
+                callPlan: callPlan,
+                contractDate: LocalDate.of(2018, 4, 1),
+                cancelDate: null,
+            )
+        )
 
         and:
         def trafficStats = new TrafficStats()
 
         expect:
-        tariff.getRateOfInternetConnection(cutoffDate, customerContract, trafficStats) == 300
+        tariff.getRateOfInternetConnection(cutoffDate, customerContract, trafficStats) == rate
+
+        where:
+        callPlan       | rate
+        BASIC_THE_NEXT | 300
+        BASIC_HENSHIN  | 300
+        BASIC_X        | 300
     }
 
     @Unroll
-    void "基本プランの#callPlanを当月の#contractDateに新規契約したとき、インターネット接続料金を計算する"() {
+    void "基本プランの#callPlanを当月の#contractDateに新規契約したとき、インターネット接続料金はは日割りされて#rate円になる"() {
         given:
         def customerContract = new CustomerContract(
             callPlanContract: new CallPlanContract(

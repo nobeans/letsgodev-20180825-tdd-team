@@ -20,7 +20,7 @@ class Tariff {
     }
 
     private BigDecimal getRateOfInternetConnection(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) { // 統一感を出すためにあえてfeeではなくrateにした
-        new InternetConnection().rate(cutoffDate, customerContract, trafficStats)
+        RateUtils.prorateDaily(cutoffDate, customerContract.callPlanContract.contractDate, new InternetConnection().rate(cutoffDate, customerContract, trafficStats))
     }
 
     private BigDecimal getSubtotalRateOfDataPlan(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) {
