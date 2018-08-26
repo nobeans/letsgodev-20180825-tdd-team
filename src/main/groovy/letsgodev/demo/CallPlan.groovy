@@ -30,7 +30,7 @@ enum CallPlan implements Rateable {
 
     @Override
     String toString() {
-        "${name}"
+        name
     }
 
     @Override
