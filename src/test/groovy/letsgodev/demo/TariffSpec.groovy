@@ -14,14 +14,20 @@ import static letsgodev.demo.DataPlan.*
 class TariffSpec extends Specification {
 
     @Shared
-    LocalDate cutoffDate = LocalDate.of(2018, 8, 31)
+    LocalDate cutoffDate = LocalDate.of(2018, 8, 31) // 月末締め(固定)とする
 
     Tariff tariff = new Tariff()
 
     @Unroll
     void "基本プランが#callPlanのとき、月額の基本料金は#rate円になる"() {
         given:
-        def customerContract = new CustomerContract(callPlan: callPlan)
+        def customerContract = new CustomerContract(
+            callPlanContract: new CallPlanContract(
+                callPlan: callPlan,
+                contractDate: LocalDate.of(2018, 4, 1),
+                cancelDate: null,
+            )
+        )
 
         and:
         def trafficStats = new TrafficStats()
@@ -40,7 +46,13 @@ class TariffSpec extends Specification {
     @IgnoreRest
     void "基本プランの#callPlanを当月の#contractDateに新規契約したとき、月額の基本料金は日割りされて#rate円になる"() {
         given:
-        def customerContract = new CustomerContract(callPlan: callPlan)
+        def customerContract = new CustomerContract(
+            callPlanContract: new CallPlanContract(
+                callPlan: callPlan,
+                contractDate: contractDate,
+                cancelDate: null,
+            )
+        )
 
         and:
         def trafficStats = new TrafficStats()
@@ -52,7 +64,7 @@ class TariffSpec extends Specification {
         where:
         callPlan       | contractDate                                          | rate
         BASIC_THE_NEXT | cutoffDate.withDayOfMonth(1)                          | 4500
-        BASIC_THE_NEXT | cutoffDate.withDayOfMonth(2)                          | RateUtils.round(4500 / cutoffDate.lengthOfMonth()) * (cutoffDate.lengthOfMonth() - 1)
+        BASIC_THE_NEXT | cutoffDate.withDayOfMonth(2)                          | RateUtils.round(4500 / cutoffDate.lengthOfMonth() * (cutoffDate.lengthOfMonth() - 1))
         BASIC_THE_NEXT | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | RateUtils.round(4500 / cutoffDate.lengthOfMonth())
         //BASIC_HENSHIN  | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | 3500
         //BASIC_X        | cutoffDate.withDayOfMonth(1)                          | 2500

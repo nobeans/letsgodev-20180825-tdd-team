@@ -7,7 +7,7 @@ import jdk.nashorn.internal.ir.annotations.Immutable
 @Immutable
 class CustomerContract {
 
-    CallPlan callPlan
+    CallPlanContract callPlanContract
     DataPlan dataPlan
 
     Set<AdditionalServiceContract> additionalServiceContracts

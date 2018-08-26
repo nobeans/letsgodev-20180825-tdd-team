@@ -16,7 +16,13 @@ class Tariff {
     }
 
     private BigDecimal getRateOfCallPlan(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) {
-        customerContract.callPlan.rate(cutoffDate, customerContract, trafficStats)
+        def fullRate = customerContract.callPlanContract.callPlan.rate(cutoffDate, customerContract, trafficStats)
+        def contractDate = customerContract.callPlanContract.contractDate
+        if (DateUtils.isSameMonth(cutoffDate, contractDate)) {
+            def ratePerDay = fullRate / cutoffDate.lengthOfMonth()
+            return RateUtils.round(ratePerDay * (contractDate.lengthOfMonth() - contractDate.dayOfMonth + 1))
+        }
+        fullRate
     }
 
     private BigDecimal getRateOfInternetConnection(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) { // 統一感を出すためにあえてfeeではなくrateにした
