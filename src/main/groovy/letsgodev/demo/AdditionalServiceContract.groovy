@@ -7,4 +7,6 @@ class AdditionalServiceContract {
     AdditionalService additionalService
 
     LocalDate contractDate
+
+    LocalDate cancelDate
 }
