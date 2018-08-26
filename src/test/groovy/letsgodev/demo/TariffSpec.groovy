@@ -194,13 +194,13 @@ class TariffSpec extends Specification {
     }
 
     @Unroll
-    void "データ定額プランの#dataPlanを当月の#contractDateに新規契約したとき、データ通信量が#totalDataBytesバイトの場合の月額の基本料金は日割りされて#rate円になる"() {
+    void "データ定額プランの#dataPlanを#contractDateに新規契約し#cancelDescriptionたとき、データ通信量が#totalDataBytesバイトの場合、#cutoffDateを締め日とした月額の基本料金は日割りされて#rate円になる"() {
         given:
         def customerContract = new CustomerContract(
             dataPlanContract: new DataPlanContract(
                 dataPlan: dataPlan,
-                contractDate: contractDate,
-                cancelDate: null,
+                contractDate: dateOf(contractDate),
+                cancelDate: dateOf(cancelDate),
             )
         )
 
@@ -208,31 +208,68 @@ class TariffSpec extends Specification {
         def trafficStats = new TrafficStats(totalDataBytes: totalDataBytes)
 
         expect:
-        tariff.getRateOfDataPlan(cutoffDate_, customerContract, trafficStats) == rate
+        tariff.getRateOfDataPlan(dateOf(cutoffDate), customerContract, trafficStats) == rate
 
         where:
-        dataPlan   | contractDate                                            | totalDataBytes | rate
-        FLAT_LL    | cutoffDate_.withDayOfMonth(1)                           | 0              | 7000
-        FLAT_LL    | cutoffDate_.withDayOfMonth(2)                           | 0              | RateUtils.round(7000 / cutoffDate_.lengthOfMonth() * (cutoffDate_.lengthOfMonth() - 1))
-        FLAT_LL    | cutoffDate_.withDayOfMonth(cutoffDate_.lengthOfMonth()) | 0              | RateUtils.round(7000 / cutoffDate_.lengthOfMonth())
-        FLAT_L     | cutoffDate_.withDayOfMonth(1)                           | 0              | 6000
-        FLAT_L     | cutoffDate_.withDayOfMonth(2)                           | 0              | RateUtils.round(6000 / cutoffDate_.lengthOfMonth() * (cutoffDate_.lengthOfMonth() - 1))
-        FLAT_L     | cutoffDate_.withDayOfMonth(cutoffDate_.lengthOfMonth()) | 0              | RateUtils.round(6000 / cutoffDate_.lengthOfMonth())
-        FLAT_M     | cutoffDate_.withDayOfMonth(1)                           | 0              | 4500
-        FLAT_M     | cutoffDate_.withDayOfMonth(2)                           | 0              | RateUtils.round(4500 / cutoffDate_.lengthOfMonth() * (cutoffDate_.lengthOfMonth() - 1))
-        FLAT_M     | cutoffDate_.withDayOfMonth(cutoffDate_.lengthOfMonth()) | 0              | RateUtils.round(4500 / cutoffDate_.lengthOfMonth())
-        STEPWISE_S | cutoffDate_.withDayOfMonth(1)                           | 0              | 2900
-        STEPWISE_S | cutoffDate_.withDayOfMonth(2)                           | 0              | RateUtils.round(2900 / cutoffDate_.lengthOfMonth() * (cutoffDate_.lengthOfMonth() - 1))
-        STEPWISE_S | cutoffDate_.withDayOfMonth(cutoffDate_.lengthOfMonth()) | 0              | RateUtils.round(2900 / cutoffDate_.lengthOfMonth())
-        STEPWISE_S | cutoffDate_.withDayOfMonth(1)                           | 1_000_000_001  | 4000
-        STEPWISE_S | cutoffDate_.withDayOfMonth(2)                           | 1_000_000_001  | RateUtils.round(4000 / cutoffDate_.lengthOfMonth() * (cutoffDate_.lengthOfMonth() - 1))
-        STEPWISE_S | cutoffDate_.withDayOfMonth(cutoffDate_.lengthOfMonth()) | 1_000_000_001  | RateUtils.round(4000 / cutoffDate_.lengthOfMonth())
-        STEPWISE_S | cutoffDate_.withDayOfMonth(1)                           | 3_000_000_001  | 5000
-        STEPWISE_S | cutoffDate_.withDayOfMonth(2)                           | 3_000_000_001  | RateUtils.round(5000 / cutoffDate_.lengthOfMonth() * (cutoffDate_.lengthOfMonth() - 1))
-        STEPWISE_S | cutoffDate_.withDayOfMonth(cutoffDate_.lengthOfMonth()) | 3_000_000_001  | RateUtils.round(5000 / cutoffDate_.lengthOfMonth())
-        STEPWISE_S | cutoffDate_.withDayOfMonth(1)                           | 5_000_000_001  | 7000
-        STEPWISE_S | cutoffDate_.withDayOfMonth(2)                           | 5_000_000_001  | RateUtils.round(7000 / cutoffDate_.lengthOfMonth() * (cutoffDate_.lengthOfMonth() - 1))
-        STEPWISE_S | cutoffDate_.withDayOfMonth(cutoffDate_.lengthOfMonth()) | 5_000_000_001  | RateUtils.round(7000 / cutoffDate_.lengthOfMonth())
+        dataPlan   | cutoffDate   | contractDate | cancelDate   | totalDataBytes | rate
+        FLAT_LL    | "2018-08-31" | "2018-08-01" | null         | 0              | 7000
+        FLAT_LL    | "2018-08-31" | "2018-08-02" | null         | 0              | RateUtils.round(7000 / 31 * 30)
+        FLAT_LL    | "2018-08-31" | "2018-08-31" | null         | 0              | RateUtils.round(7000 / 31)
+        FLAT_LL    | "2018-08-31" | "2018-04-01" | "2018-08-01" | 0              | RateUtils.round(7000 / 31)
+        FLAT_LL    | "2018-08-31" | "2018-04-01" | "2018-08-02" | 0              | RateUtils.round(7000 / 31 * 2)
+        FLAT_LL    | "2018-08-31" | "2018-04-01" | "2018-08-31" | 0              | 7000
+        FLAT_LL    | "2018-08-31" | "2018-08-15" | "2018-08-15" | 0              | RateUtils.round(7000 / 31)
+        FLAT_LL    | "2018-08-31" | "2018-08-15" | "2018-08-16" | 0              | RateUtils.round(7000 / 31 * 2)
+        FLAT_L     | "2018-08-31" | "2018-08-01" | null         | 0              | 6000
+        FLAT_L     | "2018-08-31" | "2018-08-02" | null         | 0              | RateUtils.round(6000 / 31 * 30)
+        FLAT_L     | "2018-08-31" | "2018-08-31" | null         | 0              | RateUtils.round(6000 / 31)
+        FLAT_L     | "2018-08-31" | "2018-04-01" | "2018-08-01" | 0              | RateUtils.round(6000 / 31)
+        FLAT_L     | "2018-08-31" | "2018-04-01" | "2018-08-02" | 0              | RateUtils.round(6000 / 31 * 2)
+        FLAT_L     | "2018-08-31" | "2018-04-01" | "2018-08-31" | 0              | 6000
+        FLAT_L     | "2018-08-31" | "2018-08-15" | "2018-08-15" | 0              | RateUtils.round(6000 / 31)
+        FLAT_L     | "2018-08-31" | "2018-08-15" | "2018-08-16" | 0              | RateUtils.round(6000 / 31 * 2)
+        FLAT_M     | "2018-08-31" | "2018-08-01" | null         | 0              | 4500
+        FLAT_M     | "2018-08-31" | "2018-08-02" | null         | 0              | RateUtils.round(4500 / 31 * 30)
+        FLAT_M     | "2018-08-31" | "2018-08-31" | null         | 0              | RateUtils.round(4500 / 31)
+        FLAT_M     | "2018-08-31" | "2018-04-01" | "2018-08-01" | 0              | RateUtils.round(4500 / 31)
+        FLAT_M     | "2018-08-31" | "2018-04-01" | "2018-08-02" | 0              | RateUtils.round(4500 / 31 * 2)
+        FLAT_M     | "2018-08-31" | "2018-04-01" | "2018-08-31" | 0              | 4500
+        FLAT_M     | "2018-08-31" | "2018-08-15" | "2018-08-15" | 0              | RateUtils.round(4500 / 31)
+        FLAT_M     | "2018-08-31" | "2018-08-15" | "2018-08-16" | 0              | RateUtils.round(4500 / 31 * 2)
+        STEPWISE_S | "2018-08-31" | "2018-08-01" | null         | 0              | 2900
+        STEPWISE_S | "2018-08-31" | "2018-08-02" | null         | 0              | RateUtils.round(2900 / 31 * 30)
+        STEPWISE_S | "2018-08-31" | "2018-08-31" | null         | 0              | RateUtils.round(2900 / 31)
+        STEPWISE_S | "2018-08-31" | "2018-04-01" | "2018-08-01" | 0              | RateUtils.round(2900 / 31)
+        STEPWISE_S | "2018-08-31" | "2018-04-01" | "2018-08-02" | 0              | RateUtils.round(2900 / 31 * 2)
+        STEPWISE_S | "2018-08-31" | "2018-04-01" | "2018-08-31" | 0              | 2900
+        STEPWISE_S | "2018-08-31" | "2018-08-15" | "2018-08-15" | 0              | RateUtils.round(2900 / 31)
+        STEPWISE_S | "2018-08-31" | "2018-08-15" | "2018-08-16" | 0              | RateUtils.round(2900 / 31 * 2)
+        STEPWISE_S | "2018-08-31" | "2018-08-01" | null         | 1_000_000_001  | 4000
+        STEPWISE_S | "2018-08-31" | "2018-08-02" | null         | 1_000_000_001  | RateUtils.round(4000 / 31 * 30)
+        STEPWISE_S | "2018-08-31" | "2018-08-31" | null         | 1_000_000_001  | RateUtils.round(4000 / 31)
+        STEPWISE_S | "2018-08-31" | "2018-04-01" | "2018-08-01" | 1_000_000_001  | RateUtils.round(4000 / 31)
+        STEPWISE_S | "2018-08-31" | "2018-04-01" | "2018-08-02" | 1_000_000_001  | RateUtils.round(4000 / 31 * 2)
+        STEPWISE_S | "2018-08-31" | "2018-04-01" | "2018-08-31" | 1_000_000_001  | 4000
+        STEPWISE_S | "2018-08-31" | "2018-08-15" | "2018-08-15" | 1_000_000_001  | RateUtils.round(4000 / 31)
+        STEPWISE_S | "2018-08-31" | "2018-08-15" | "2018-08-16" | 1_000_000_001  | RateUtils.round(4000 / 31 * 2)
+        STEPWISE_S | "2018-08-31" | "2018-08-01" | null         | 3_000_000_001  | 5000
+        STEPWISE_S | "2018-08-31" | "2018-08-02" | null         | 3_000_000_001  | RateUtils.round(5000 / 31 * 30)
+        STEPWISE_S | "2018-08-31" | "2018-08-31" | null         | 3_000_000_001  | RateUtils.round(5000 / 31)
+        STEPWISE_S | "2018-08-31" | "2018-04-01" | "2018-08-01" | 3_000_000_001  | RateUtils.round(5000 / 31)
+        STEPWISE_S | "2018-08-31" | "2018-04-01" | "2018-08-02" | 3_000_000_001  | RateUtils.round(5000 / 31 * 2)
+        STEPWISE_S | "2018-08-31" | "2018-04-01" | "2018-08-31" | 3_000_000_001  | 5000
+        STEPWISE_S | "2018-08-31" | "2018-08-15" | "2018-08-15" | 3_000_000_001  | RateUtils.round(5000 / 31)
+        STEPWISE_S | "2018-08-31" | "2018-08-15" | "2018-08-16" | 3_000_000_001  | RateUtils.round(5000 / 31 * 2)
+        STEPWISE_S | "2018-08-31" | "2018-08-01" | null         | 5_000_000_001  | 7000
+        STEPWISE_S | "2018-08-31" | "2018-08-02" | null         | 5_000_000_001  | RateUtils.round(7000 / 31 * 30)
+        STEPWISE_S | "2018-08-31" | "2018-08-31" | null         | 5_000_000_001  | RateUtils.round(7000 / 31)
+        STEPWISE_S | "2018-08-31" | "2018-04-01" | "2018-08-01" | 5_000_000_001  | RateUtils.round(7000 / 31)
+        STEPWISE_S | "2018-08-31" | "2018-04-01" | "2018-08-02" | 5_000_000_001  | RateUtils.round(7000 / 31 * 2)
+        STEPWISE_S | "2018-08-31" | "2018-04-01" | "2018-08-31" | 5_000_000_001  | 7000
+        STEPWISE_S | "2018-08-31" | "2018-08-15" | "2018-08-15" | 5_000_000_001  | RateUtils.round(7000 / 31)
+        STEPWISE_S | "2018-08-31" | "2018-08-15" | "2018-08-16" | 5_000_000_001  | RateUtils.round(7000 / 31 * 2)
+
+        cancelDescription = cancelDate ? "て${cancelDate}に解約し" : ""
     }
 
     @Unroll
