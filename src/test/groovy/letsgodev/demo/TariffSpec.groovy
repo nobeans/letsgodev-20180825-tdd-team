@@ -56,8 +56,14 @@ class TariffSpec extends Specification {
 
     @Unroll
     void "インターネット接続料金を計算する"() {
+        given:
+        def customerContract = new CustomerContract()
+
+        and:
+        def trafficStats = new TrafficStats()
+
         expect:
-        tariff.internetConnectionFee == 300
+        tariff.getRateOfInternetConnection(customerContract, trafficStats) == 300
     }
 
     @Unroll
