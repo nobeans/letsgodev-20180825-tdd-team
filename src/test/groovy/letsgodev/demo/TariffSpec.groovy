@@ -1,6 +1,5 @@
 package letsgodev.demo
 
-import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -11,9 +10,6 @@ import static letsgodev.demo.CallPlan.*
 import static letsgodev.demo.DataPlan.*
 
 class TariffSpec extends Specification {
-
-    @Shared
-    LocalDate cutoffDate_ = LocalDate.of(2018, 8, 31) // 月末締め(固定)とする
 
     Tariff tariff = new Tariff()
 
@@ -317,7 +313,7 @@ class TariffSpec extends Specification {
         def trafficStats = new TrafficStats(totalDataBytes: totalDataBytes)
 
         expect:
-        tariff.getTotalRate(cutoffDate_, customerContract, trafficStats) == rate
+        tariff.getTotalRate(dateOf(cutoffDate), customerContract, trafficStats) == rate
 
         where:
         callPlan       | dataPlan | totalDataBytes | rate
@@ -325,6 +321,8 @@ class TariffSpec extends Specification {
         BASIC_HENSHIN  | FLAT_LL  | 0              | 3500 + 7000 + 300
         BASIC_X        | FLAT_LL  | 0              | 2500 + 7000 + 300
         // TODO 組み合わせ書く
+
+        cutoffDate = "2018-08-31"
     }
 
     private static LocalDate dateOf(String date) {
