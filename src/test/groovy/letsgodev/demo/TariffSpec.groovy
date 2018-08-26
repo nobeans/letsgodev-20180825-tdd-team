@@ -221,7 +221,7 @@ class TariffSpec extends Specification {
         def trafficStats = new TrafficStats()
 
         expect:
-        tariff.getRateOfAdditionalServices(dateOf(cutoffDate), customerContract, trafficStats) == rate
+        tariff.getSubtotalRateOfAdditionalServices(dateOf(cutoffDate), customerContract, trafficStats) == rate
 
         where:
         additionalServices                                                  | rate
@@ -257,7 +257,7 @@ class TariffSpec extends Specification {
         def trafficStats = new TrafficStats()
 
         expect:
-        tariff.getRateOfAdditionalServices(dateOf(cutoffDate), customerContract, trafficStats) == rate
+        tariff.getSubtotalRateOfAdditionalServices(dateOf(cutoffDate), customerContract, trafficStats) == rate
 
         where:
         additionalService         | canceledOnce | cutoffDate   | contractDate | cancelDate   | rate | description

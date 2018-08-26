@@ -7,7 +7,7 @@ class Tariff {
     BigDecimal getTotalRate(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) {
         getSubtotalRateOfCallPlan(cutoffDate, customerContract, trafficStats) +
             getSubtotalRateOfDataPlan(cutoffDate, customerContract, trafficStats) +
-            getRateOfAdditionalServices(cutoffDate, customerContract, trafficStats)
+            getSubtotalRateOfAdditionalServices(cutoffDate, customerContract, trafficStats)
     }
 
     private BigDecimal getSubtotalRateOfCallPlan(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) {
@@ -31,9 +31,14 @@ class Tariff {
         RateUtils.prorateDaily(cutoffDate, customerContract.dataPlanContract.contractDate, customerContract.dataPlanContract.cancelDate, customerContract.dataPlanContract.dataPlan.rate(cutoffDate, customerContract, trafficStats))
     }
 
-    private BigDecimal getRateOfAdditionalServices(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) {
+    private BigDecimal getSubtotalRateOfAdditionalServices(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) {
         // 当月に解約されたオプション契約も請求対象となる。
-        (customerContract.availableAdditionalServiceContracts + customerContract.canceledAdditionalServiceContracts.findAll { DateUtils.isSameMonth(it.cancelDate, cutoffDate) }).sum { AdditionalServiceContract additionalServiceContract ->
+        getRateOfAdditionalService(customerContract.availableAdditionalServiceContracts, cutoffDate, customerContract, trafficStats) +
+            getRateOfAdditionalService(customerContract.canceledAdditionalServiceContracts.findAll { DateUtils.isSameMonth(it.cancelDate, cutoffDate) }, cutoffDate, customerContract, trafficStats)
+    }
+
+    private BigDecimal getRateOfAdditionalService(Collection<AdditionalServiceContract> additionalServiceContracts, LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) {
+        additionalServiceContracts.sum { AdditionalServiceContract additionalServiceContract ->
             additionalServiceContract.additionalService.rate(cutoffDate, customerContract, trafficStats)
         } as BigDecimal ?: 0
     }
