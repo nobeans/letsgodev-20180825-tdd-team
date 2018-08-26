@@ -31,6 +31,19 @@ https://github.com/5000dai/free-style-battle
 - すべての合計のパターン網羅
 
 
+## テストの実行方法
+
+Javaさえインストールされていれば、Gradle Wrapperを使って簡単に実行できます。
+
+```
+# Linux / macOS
+$ ./gradlew check
+
+# Windows
+> gradlew.bat check
+```
+
+
 ## 現状でのテスト実行したレポートの一覧
 
 Spockのデータ駆動テストとメソッド名の`@Unroll`展開を駆使して、レポートのそれぞれの1行が仕様に対する具体的な料金計算例を表すように頑張ってます。
