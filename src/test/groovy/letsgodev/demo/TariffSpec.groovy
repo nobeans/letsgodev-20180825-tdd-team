@@ -134,7 +134,7 @@ class TariffSpec extends Specification {
         SAFE_COMPENSATION_SUPPORT | false        | cutoffDate                  | 0    | "初回加入月は無料となる"
         SAFE_COMPENSATION_SUPPORT | false        | cutoffDate.minusMonths(1)   | 0    | "初回加入月の翌月は無料となる"
         SAFE_COMPENSATION_SUPPORT | false        | cutoffDate.minusMonths(2)   | 330  | "初回加入月の翌々月は有料となる"
-        SAFE_COMPENSATION_SUPPORT | false        | cutoffDate.minusMonths(999) | 330  | "初回加入月のかなり昔月は有料となる"
+        SAFE_COMPENSATION_SUPPORT | false        | cutoffDate.minusMonths(999) | 330  | "初回加入月のかなり昔は有料となる"
         SAFE_COMPENSATION_SUPPORT | true         | cutoffDate                  | 330  | "加入月ではあるが初回ではない場合は有料となる"
 //        [SAFE_COMPENSATION_SUPPORT] | 330
 //        [SAFE_REMOTE_SUPPORT] | 400
