@@ -51,6 +51,6 @@ enum AdditionalService implements Rateable {
     boolean canBeFreeForFirstContract(LocalDate cutoffDate, CustomerContract customerContract) {
         def currentContract = customerContract.availableAdditionalServiceContracts.find { it.additionalService == this }
         def canceledContract = customerContract.canceledAdditionalServiceContracts.find { it.additionalService == this }
-        currentContract && !canceledContract && cutoffDate <= currentContract.contractDate.plusMonths(2)
+        currentContract && !canceledContract && cutoffDate <= currentContract.contractDate.plusMonths(2) // TODO 境界怪しい？
     }
 }

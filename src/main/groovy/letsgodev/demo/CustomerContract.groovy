@@ -13,10 +13,10 @@ class CustomerContract {
     Set<AdditionalServiceContract> additionalServiceContracts
 
     Set<AdditionalServiceContract> getAvailableAdditionalServiceContracts() {
-        additionalServiceContracts.findAll { it.cancelDate == null }
+        additionalServiceContracts.findAll { it.cancelDate == null } ?: []
     }
 
     Set<AdditionalServiceContract> getCanceledAdditionalServiceContracts() {
-        additionalServiceContracts.findAll { it.cancelDate != null }
+        additionalServiceContracts.findAll { it.cancelDate != null } ?: []
     }
 }
