@@ -79,15 +79,24 @@ class TariffSpec extends Specification {
     @Unroll
     void "オプションとして#additionalServicesを契約しているとき、オプション料金が#rate円になる"() {
         given:
-        def customerContract = new CustomerContract(
-            additionalServiceContracts: additionalServices.collect { AdditionalService additionalService ->
-                new AdditionalServiceContract(
-                    additionalService: additionalService,
-                    contractDate: LocalDate.of(2018, 4, 1),
-                    cancelDate: null
-                )
-            }
-        )
+        def additionalServiceContracts = []
+
+        // 過去のキャンセルされたオプション契約は計算対象にならないこと
+        def oldDate = LocalDate.of(1970, 1, 1)
+        additionalServiceContracts.addAll(additionalServices.collect { AdditionalService additionalService ->
+            new AdditionalServiceContract(additionalService: additionalService, contractDate: oldDate, cancelDate: oldDate)
+        })
+
+        // 計算対象となるオプション契約
+        additionalServiceContracts.addAll(additionalServices.collect { AdditionalService additionalService ->
+            new AdditionalServiceContract(
+                additionalService: additionalService,
+                contractDate: LocalDate.of(2018, 4, 1),
+                cancelDate: null
+            )
+        })
+
+        def customerContract = new CustomerContract(additionalServiceContracts: additionalServiceContracts)
 
         and:
         def trafficStats = new TrafficStats()
