@@ -3,6 +3,9 @@ package letsgodev.demo
 import groovy.transform.ToString
 import jdk.nashorn.internal.ir.annotations.Immutable
 
+/**
+ * 請求月に対する利用状況です。
+ */
 @ToString
 @Immutable
 class TrafficStats {
