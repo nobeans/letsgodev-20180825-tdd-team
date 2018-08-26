@@ -102,6 +102,37 @@ class TariffSpec extends Specification {
         [SAFE_COMPENSATION_SUPPORT, SAFE_REMOTE_SUPPORT, SAFE_NET_SECURITY_SUPPORT] | 330 + 400 + 500
     }
 
+    @Unroll // TODO
+    void "オプションとして#additionalServiceを契約しているとき、初回加入時に限り最大2ヶ月無料(加入月とその翌月)となる"() {
+        given:
+        def customerContract = new CustomerContract(
+            additionalServiceContracts: [
+                new AdditionalServiceContract(
+                    additionalService: additionalService,
+                    contractDate: contractDate,
+                    cancelDate: null,
+                )
+            ]
+        )
+
+        and:
+        def trafficStats = new TrafficStats()
+
+        expect:
+        tariff.getRateOfAdditionalServices(cutoffDate, customerContract, trafficStats) == rate
+
+        where:
+        additionalService         | contractDate              | rate
+        SAFE_COMPENSATION_SUPPORT | LocalDate.of(2018, 8, 1)  | 0 // 加入月
+        SAFE_COMPENSATION_SUPPORT | LocalDate.of(2018, 8, 31) | 0 // 加入月
+        SAFE_COMPENSATION_SUPPORT | LocalDate.of(2018, 7, 1)  | 0 // 翌月
+        SAFE_COMPENSATION_SUPPORT | LocalDate.of(2018, 7, 31) | 0 // 翌月
+        SAFE_COMPENSATION_SUPPORT | LocalDate.of(2018, 6, 30) | 330 // 翌々月
+//        [SAFE_COMPENSATION_SUPPORT] | 330
+//        [SAFE_REMOTE_SUPPORT] | 400
+//        [SAFE_NET_SECURITY_SUPPORT] | 500
+    }
+
     void "月ごとの合計料金(税抜き)を計算する"() {
         given:
         def customerContract = new CustomerContract(callPlan: callPlan, dataPlan: dataPlan)
