@@ -20,13 +20,7 @@ class TariffSpec extends Specification {
     @Unroll
     void "基本プランの#callPlanを#contractDateに新規契約し#cancelDescriptionたとき、#cutoffDateを締め日とした月額の基本料金は#proratedDescription#rate円になる"() {
         given:
-        def customerContract = new CustomerContract(
-            callPlanContract: new CallPlanContract(
-                callPlan: callPlan,
-                contractDate: dateOf(contractDate),
-                cancelDate: dateOf(cancelDate),
-            )
-        )
+        def customerContract = new CustomerContract(callPlanContract: new CallPlanContract(callPlan: callPlan, contractDate: dateOf(contractDate), cancelDate: dateOf(cancelDate)))
 
         and:
         def trafficStats = new TrafficStats()
@@ -68,20 +62,13 @@ class TariffSpec extends Specification {
         BASIC_X        | "2018-08-31" | "2018-08-15" | "2018-08-16" | RateUtils.round(2500 / 31 * 2)
 
         cancelDescription = cancelDate ? "て${cancelDate}に解約し" : ""
-
         proratedDescription = DateUtils.isSameMonth(dateOf(cutoffDate), dateOf(contractDate)) || DateUtils.isSameMonth(dateOf(cutoffDate), dateOf(cancelDate)) ? "日割りされて" : ""
     }
 
     @Unroll
     void "基本プランの#callPlanを#contractDateに新規契約し#cancelDescriptionたとき、#cutoffDateを締め日としたインターネット接続料金は#proratedDescription#rate円になる"() {
         given:
-        def customerContract = new CustomerContract(
-            callPlanContract: new CallPlanContract(
-                callPlan: callPlan,
-                contractDate: dateOf(contractDate),
-                cancelDate: dateOf(cancelDate),
-            )
-        )
+        def customerContract = new CustomerContract(callPlanContract: new CallPlanContract(callPlan: callPlan, contractDate: dateOf(contractDate), cancelDate: dateOf(cancelDate)))
 
         and:
         def trafficStats = new TrafficStats()
@@ -123,20 +110,13 @@ class TariffSpec extends Specification {
         BASIC_X        | "2018-08-31" | "2018-08-15" | "2018-08-16" | RateUtils.round(300 / 31 * 2)
 
         cancelDescription = cancelDate ? "て${cancelDate}に解約し" : ""
-
         proratedDescription = DateUtils.isSameMonth(dateOf(cutoffDate), dateOf(contractDate)) || DateUtils.isSameMonth(dateOf(cutoffDate), dateOf(cancelDate)) ? "日割りされて" : ""
     }
 
     @Unroll
     void "データ定額プランの#dataPlanを#contractDateに新規契約し#cancelDescriptionたとき、データ通信量が#totalDataBytesバイトの場合、#cutoffDateを締め日とした月額の基本料金は#proratedDescription#rate円になる"() {
         given:
-        def customerContract = new CustomerContract(
-            dataPlanContract: new DataPlanContract(
-                dataPlan: dataPlan,
-                contractDate: dateOf(contractDate),
-                cancelDate: dateOf(cancelDate),
-            )
-        )
+        def customerContract = new CustomerContract(dataPlanContract: new DataPlanContract(dataPlan: dataPlan, contractDate: dateOf(contractDate), cancelDate: dateOf(cancelDate)))
 
         and:
         def trafficStats = new TrafficStats(totalDataBytes: totalDataBytes)
@@ -219,7 +199,6 @@ class TariffSpec extends Specification {
         STEPWISE_S | "2018-08-31" | "2018-08-15" | "2018-08-16" | 5_000_000_001  | RateUtils.round(7000 / 31 * 2)
 
         cancelDescription = cancelDate ? "て${cancelDate}に解約し" : ""
-
         proratedDescription = DateUtils.isSameMonth(dateOf(cutoffDate), dateOf(contractDate)) || DateUtils.isSameMonth(dateOf(cutoffDate), dateOf(cancelDate)) ? "日割りされて" : ""
     }
 
@@ -236,11 +215,7 @@ class TariffSpec extends Specification {
 
         // 計算対象となるオプション契約
         additionalServiceContracts.addAll(additionalServices.collect { AdditionalService additionalService ->
-            new AdditionalServiceContract(
-                additionalService: additionalService,
-                contractDate: dateOf(contractDate),
-                cancelDate: null,
-            )
+            new AdditionalServiceContract(additionalService: additionalService, contractDate: dateOf(contractDate), cancelDate: null)
         })
 
         def customerContract = new CustomerContract(additionalServiceContracts: additionalServiceContracts)
@@ -275,11 +250,7 @@ class TariffSpec extends Specification {
         }
 
         // 計算対象となるオプション契約
-        additionalServiceContracts << new AdditionalServiceContract(
-            additionalService: additionalService,
-            contractDate: dateOf(contractDate),
-            cancelDate: dateOf(cancelDate),
-        )
+        additionalServiceContracts << new AdditionalServiceContract(additionalService: additionalService, contractDate: dateOf(contractDate), cancelDate: dateOf(cancelDate))
 
         def customerContract = new CustomerContract(additionalServiceContracts: additionalServiceContracts)
 
