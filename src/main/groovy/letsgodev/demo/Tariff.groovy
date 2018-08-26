@@ -16,13 +16,7 @@ class Tariff {
     }
 
     private BigDecimal getRateOfCallPlan(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) {
-        def fullRate = customerContract.callPlanContract.callPlan.rate(cutoffDate, customerContract, trafficStats)
-        def contractDate = customerContract.callPlanContract.contractDate
-        if (DateUtils.isSameMonth(cutoffDate, contractDate)) {
-            def ratePerDay = fullRate / cutoffDate.lengthOfMonth()
-            return RateUtils.round(ratePerDay * (contractDate.lengthOfMonth() - contractDate.dayOfMonth + 1))
-        }
-        fullRate
+        prorateDaily(customerContract.callPlanContract.callPlan.rate(cutoffDate, customerContract, trafficStats), customerContract.callPlanContract.contractDate, cutoffDate)
     }
 
     private BigDecimal getRateOfInternetConnection(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) { // 統一感を出すためにあえてfeeではなくrateにした
@@ -34,8 +28,10 @@ class Tariff {
     }
 
     private BigDecimal getRateOfDataPlan(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) {
-        def fullRate = customerContract.dataPlanContract.dataPlan.rate(cutoffDate, customerContract, trafficStats)
-        def contractDate = customerContract.dataPlanContract.contractDate
+        prorateDaily(customerContract.dataPlanContract.dataPlan.rate(cutoffDate, customerContract, trafficStats), customerContract.dataPlanContract.contractDate, cutoffDate)
+    }
+
+    static BigDecimal prorateDaily(BigDecimal fullRate, LocalDate contractDate, LocalDate cutoffDate) {
         if (DateUtils.isSameMonth(cutoffDate, contractDate)) {
             def ratePerDay = fullRate / cutoffDate.lengthOfMonth()
             return RateUtils.round(ratePerDay * (contractDate.lengthOfMonth() - contractDate.dayOfMonth + 1))
