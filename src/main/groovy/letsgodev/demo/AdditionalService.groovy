@@ -10,10 +10,7 @@ enum AdditionalService implements Rateable {
     SAFE_COMPENSATION_SUPPORT("あんしん補償サービス"){
         @Override
         BigDecimal rate(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) {
-            // ※14 初回加入時に限り最大2ヶ月無料(加入月とその翌月)
-            def currentContract = customerContract.availableAdditionalServiceContracts.find { it.additionalService == SAFE_COMPENSATION_SUPPORT }
-            def canceledContract = customerContract.canceledAdditionalServiceContracts.find { it.additionalService == SAFE_COMPENSATION_SUPPORT }
-            if (currentContract && !canceledContract && cutoffDate <= currentContract.contractDate.plusMonths(2)) {
+            if (canBeFreeForFirstContract(cutoffDate, customerContract)) {
                 return 0
             }
             330
@@ -23,6 +20,9 @@ enum AdditionalService implements Rateable {
     SAFE_REMOTE_SUPPORT("あんしん遠隔サポート"){
         @Override
         BigDecimal rate(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) {
+            if (canBeFreeForFirstContract(cutoffDate, customerContract)) {
+                return 0
+            }
             400
         }
     },
@@ -30,6 +30,9 @@ enum AdditionalService implements Rateable {
     SAFE_NET_SECURITY_SUPPORT("あんしんネットセキュリティ"){
         @Override
         BigDecimal rate(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) {
+            if (canBeFreeForFirstContract(cutoffDate, customerContract)) {
+                return 0
+            }
             500
         }
     }
@@ -43,4 +46,11 @@ enum AdditionalService implements Rateable {
 
     @Override
     abstract BigDecimal rate(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats)
+
+    /** ※14 初回加入時に限り最大2ヶ月無料(加入月とその翌月)かどうか */
+    boolean canBeFreeForFirstContract(LocalDate cutoffDate, CustomerContract customerContract) {
+        def currentContract = customerContract.availableAdditionalServiceContracts.find { it.additionalService == this }
+        def canceledContract = customerContract.canceledAdditionalServiceContracts.find { it.additionalService == this }
+        currentContract && !canceledContract && cutoffDate <= currentContract.contractDate.plusMonths(2)
+    }
 }
