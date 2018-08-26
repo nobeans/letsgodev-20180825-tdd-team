@@ -102,7 +102,8 @@ class TariffSpec extends Specification {
         [SAFE_COMPENSATION_SUPPORT, SAFE_REMOTE_SUPPORT, SAFE_NET_SECURITY_SUPPORT] | 330 + 400 + 500
     }
 
-    @Unroll // TODO
+    @Unroll
+    // TODO
     void "オプションとして#additionalServiceを契約しているとき、初回加入時に限り最大2ヶ月無料(加入月とその翌月)となる"() {
         given:
         def customerContract = new CustomerContract(
@@ -128,6 +129,7 @@ class TariffSpec extends Specification {
         SAFE_COMPENSATION_SUPPORT | LocalDate.of(2018, 7, 1)  | 0 // 翌月
         SAFE_COMPENSATION_SUPPORT | LocalDate.of(2018, 7, 31) | 0 // 翌月
         SAFE_COMPENSATION_SUPPORT | LocalDate.of(2018, 6, 30) | 330 // 翌々月
+        SAFE_COMPENSATION_SUPPORT | LocalDate.of(2016, 1, 1)  | 330 // 昔々
 //        [SAFE_COMPENSATION_SUPPORT] | 330
 //        [SAFE_REMOTE_SUPPORT] | 400
 //        [SAFE_NET_SECURITY_SUPPORT] | 500
