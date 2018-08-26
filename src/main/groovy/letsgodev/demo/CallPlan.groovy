@@ -12,4 +12,9 @@ enum CallPlan {
     BASIC_X("レッツゴーデベロッパー X プラン")
 
     String name
+
+    @Override
+    String toString() {
+        name
+    }
 }

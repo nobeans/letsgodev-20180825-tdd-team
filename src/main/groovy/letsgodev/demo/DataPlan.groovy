@@ -14,4 +14,9 @@ enum DataPlan {
     STEPWISE_S("仮面データパックS")
 
     String name
+
+    @Override
+    String toString() {
+        name
+    }
 }

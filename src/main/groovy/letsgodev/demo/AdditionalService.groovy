@@ -1,5 +1,6 @@
 package letsgodev.demo
 
+
 import groovy.transform.TupleConstructor
 
 @TupleConstructor
@@ -10,4 +11,9 @@ enum AdditionalService {
     SAFE_NET_SECURITY_SUPPORT("あんしんネットセキュリティ")
 
     String name
+
+    @Override
+    String toString() {
+        name
+    }
 }
