@@ -110,7 +110,7 @@ class TariffSpec extends Specification {
     }
 
     @Unroll
-    void "データ定額プランの#dataPlanを#contractDateに新規契約し#cancelDescriptionたとき、データ通信量が#totalDataBytesバイトの場合、#cutoffDateを締め日とした月額料金は#proratedDescription#rate円になる"() {
+    void "データ定額プランの#dataPlanを#contractDateに新規契約し#cancelDescriptionたとき、#totalDataBytesDescription#cutoffDateを締め日とした月額料金は#proratedDescription#rate円になる"() {
         given:
         def customerContract = new CustomerContract(dataPlanContract: new DataPlanContract(dataPlan: dataPlan, contractDate: dateOf(contractDate), cancelDate: dateOf(cancelDate)))
 
@@ -195,6 +195,9 @@ class TariffSpec extends Specification {
         STEPWISE_S | "2018-08-31" | "2018-08-15" | "2018-08-16" | 5_000_000_001  | RateUtils.round(7000 / 31 * 2)
 
         cancelDescription = cancelDate ? "て${cancelDate}に解約し" : ""
+
+        totalDataBytesDescription = dataPlan == STEPWISE_S ? "データ通信量が${totalDataBytes}バイトの場合、" : ""
+
         proratedDescription = DateUtils.isSameMonth(dateOf(cutoffDate), dateOf(contractDate)) || DateUtils.isSameMonth(dateOf(cutoffDate), dateOf(cancelDate)) ? "日割りされて" : ""
     }
 
