@@ -7,12 +7,13 @@ class TariffSpec extends Specification {
 
     Tariff tariff = new Tariff()
 
-    TrafficStats trafficStats = new TrafficStats()
-
     @Unroll
     void "基本プランが#callPlanのとき、月額の基本料金は#rate円になる"() {
         given:
         def customerContract = new CustomerContract(callPlan: callPlan)
+
+        and:
+        def trafficStats = new TrafficStats()
 
         expect:
         tariff.getRateOfCallPlan(customerContract, trafficStats) == rate
@@ -64,6 +65,9 @@ class TariffSpec extends Specification {
         given:
         def customerContract = new CustomerContract(additionalServices: additionalServices)
 
+        and:
+        def trafficStats = new TrafficStats()
+
         expect:
         tariff.getRateOfAdditionalServices(customerContract, trafficStats) == rate
 
@@ -78,13 +82,13 @@ class TariffSpec extends Specification {
 
     void "月ごとの合計料金(税抜き)を計算する"() {
         given:
-        def contract = new CustomerContract(callPlan: callPlan, dataPlan: dataPlan)
+        def customerContract = new CustomerContract(callPlan: callPlan, dataPlan: dataPlan)
 
         and:
         def trafficStats = new TrafficStats(totalDataBytes: totalDataBytes)
 
         expect:
-        tariff.getTotalRate(contract, trafficStats) == rate
+        tariff.getTotalRate(customerContract, trafficStats) == rate
 
         where:
         callPlan                | dataPlan         | totalDataBytes | rate
