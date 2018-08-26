@@ -249,7 +249,7 @@ class TariffSpec extends Specification {
         def trafficStats = new TrafficStats()
 
         expect:
-        tariff.getRateOfAdditionalServices(cutoffDate_, customerContract, trafficStats) == rate
+        tariff.getRateOfAdditionalServices(dateOf(cutoffDate), customerContract, trafficStats) == rate
 
         where:
         additionalServices                                                  | rate
@@ -258,6 +258,8 @@ class TariffSpec extends Specification {
         [SAFE_REMOTE_SUPPORT]                                               | 400
         [SAFE_NET_SECURITY]                                                 | 500
         [SAFE_COMPENSATION_SERVICE, SAFE_REMOTE_SUPPORT, SAFE_NET_SECURITY] | 330 + 400 + 500
+
+        cutoffDate = "2018-08-31"
     }
 
     @Unroll
@@ -274,7 +276,7 @@ class TariffSpec extends Specification {
         // 計算対象となるオプション契約
         additionalServiceContracts << new AdditionalServiceContract(
             additionalService: additionalService,
-            contractDate: contractDate,
+            contractDate: dateOf(contractDate),
             cancelDate: null,
         )
 
@@ -284,25 +286,25 @@ class TariffSpec extends Specification {
         def trafficStats = new TrafficStats()
 
         expect:
-        tariff.getRateOfAdditionalServices(cutoffDate_, customerContract, trafficStats) == rate
+        tariff.getRateOfAdditionalServices(dateOf(cutoffDate), customerContract, trafficStats) == rate
 
         where:
-        additionalService         | canceledOnce | contractDate                 | rate | description
-        SAFE_COMPENSATION_SERVICE | false        | cutoffDate_                  | 0    | "初回加入月は無料となる"
-        SAFE_COMPENSATION_SERVICE | false        | cutoffDate_.minusMonths(1)   | 0    | "初回加入月の翌月は無料となる"
-        SAFE_COMPENSATION_SERVICE | false        | cutoffDate_.minusMonths(2)   | 330  | "初回加入月の翌々月は有料となる"
-        SAFE_COMPENSATION_SERVICE | false        | cutoffDate_.minusMonths(999) | 330  | "初回加入月のかなり昔は有料となる"
-        SAFE_COMPENSATION_SERVICE | true         | cutoffDate_                  | 330  | "加入月ではあるが初回ではない場合は有料となる"
-        SAFE_REMOTE_SUPPORT       | false        | cutoffDate_                  | 0    | "初回加入月は無料となる"
-        SAFE_REMOTE_SUPPORT       | false        | cutoffDate_.minusMonths(1)   | 0    | "初回加入月の翌月は無料となる"
-        SAFE_REMOTE_SUPPORT       | false        | cutoffDate_.minusMonths(2)   | 400  | "初回加入月の翌々月は有料となる"
-        SAFE_REMOTE_SUPPORT       | false        | cutoffDate_.minusMonths(999) | 400  | "初回加入月のかなり昔は有料となる"
-        SAFE_REMOTE_SUPPORT       | true         | cutoffDate_                  | 400  | "加入月ではあるが初回ではない場合は有料となる"
-        SAFE_NET_SECURITY         | false        | cutoffDate_                  | 0    | "初回加入月は無料となる"
-        SAFE_NET_SECURITY         | false        | cutoffDate_.minusMonths(1)   | 0    | "初回加入月の翌月は無料となる"
-        SAFE_NET_SECURITY         | false        | cutoffDate_.minusMonths(2)   | 500  | "初回加入月の翌々月は有料となる"
-        SAFE_NET_SECURITY         | false        | cutoffDate_.minusMonths(999) | 500  | "初回加入月のかなり昔は有料となる"
-        SAFE_NET_SECURITY         | true         | cutoffDate_                  | 500  | "加入月ではあるが初回ではない場合は有料となる"
+        additionalService         | canceledOnce | cutoffDate   | contractDate | rate | description
+        SAFE_COMPENSATION_SERVICE | false        | "2018-08-31" | "2018-08-01" | 0    | "初回加入月は無料となる"
+        SAFE_COMPENSATION_SERVICE | false        | "2018-08-31" | "2018-07-01" | 0    | "初回加入月の翌月は無料となる"
+        SAFE_COMPENSATION_SERVICE | false        | "2018-08-31" | "2018-06-01" | 330  | "初回加入月の翌々月は有料となる"
+        SAFE_COMPENSATION_SERVICE | false        | "2018-08-31" | "1970-01-01" | 330  | "初回加入月のかなり昔は有料となる"
+        SAFE_COMPENSATION_SERVICE | true         | "2018-08-31" | "2018-08-01" | 330  | "加入月ではあるが初回ではない場合は有料となる"
+        SAFE_REMOTE_SUPPORT       | false        | "2018-08-31" | "2018-08-01" | 0    | "初回加入月は無料となる"
+        SAFE_REMOTE_SUPPORT       | false        | "2018-08-31" | "2018-07-01" | 0    | "初回加入月の翌月は無料となる"
+        SAFE_REMOTE_SUPPORT       | false        | "2018-08-31" | "2018-06-01" | 400  | "初回加入月の翌々月は有料となる"
+        SAFE_REMOTE_SUPPORT       | false        | "2018-08-31" | "1970-01-01" | 400  | "初回加入月のかなり昔は有料となる"
+        SAFE_REMOTE_SUPPORT       | true         | "2018-08-31" | "2018-08-01" | 400  | "加入月ではあるが初回ではない場合は有料となる"
+        SAFE_NET_SECURITY         | false        | "2018-08-31" | "2018-08-01" | 0    | "初回加入月は無料となる"
+        SAFE_NET_SECURITY         | false        | "2018-08-31" | "2018-07-01" | 0    | "初回加入月の翌月は無料となる"
+        SAFE_NET_SECURITY         | false        | "2018-08-31" | "2018-06-01" | 500  | "初回加入月の翌々月は有料となる"
+        SAFE_NET_SECURITY         | false        | "2018-08-31" | "1970-01-01" | 500  | "初回加入月のかなり昔は有料となる"
+        SAFE_NET_SECURITY         | true         | "2018-08-31" | "2018-08-01" | 500  | "加入月ではあるが初回ではない場合は有料となる"
     }
 
     @Unroll
