@@ -24,10 +24,6 @@ class Tariff {
     }
 
     private BigDecimal getSubtotalRateOfDataPlan(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) {
-        getRateOfDataPlan(cutoffDate, customerContract, trafficStats)
-    }
-
-    private BigDecimal getRateOfDataPlan(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) {
         RateUtils.prorateDaily(cutoffDate, customerContract.dataPlanContract.contractDate, customerContract.dataPlanContract.cancelDate, customerContract.dataPlanContract.dataPlan.rate(cutoffDate, customerContract, trafficStats))
     }
 
