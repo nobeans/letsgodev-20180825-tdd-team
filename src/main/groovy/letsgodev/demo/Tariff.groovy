@@ -33,13 +33,8 @@ class Tariff {
 
     private BigDecimal getRateOfAdditionalServices(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) {
         // 当月に解約されたオプション契約も請求対象となる。
-        (customerContract.availableAdditionalServiceContracts + customerContract.canceledAdditionalServiceContracts.findAll { isSameMonth(it.cancelDate, cutoffDate) }).sum { AdditionalServiceContract additionalServiceContract ->
+        (customerContract.availableAdditionalServiceContracts + customerContract.canceledAdditionalServiceContracts.findAll { DateUtils.isSameMonth(it.cancelDate, cutoffDate) }).sum { AdditionalServiceContract additionalServiceContract ->
             additionalServiceContract.additionalService.rate(cutoffDate, customerContract, trafficStats)
         } as BigDecimal ?: 0
-    }
-
-    // TODO とでDateUtilsに移動
-    static boolean isSameMonth(LocalDate date1, LocalDate date2) {
-        date1.year == date2.year && date1.monthValue == date2.monthValue
     }
 }
