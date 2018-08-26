@@ -72,7 +72,7 @@ class TariffSpec extends Specification {
     }
 
     @Unroll
-    void "基本プランの#callPlanを当月の#cancelDateに解約したとき、月額の基本料金は日割りされて#rate円になる"() {
+    void "基本プランの#callPlanを当月の#cancelDateに解約したとき、#cutoffDateの月額の基本料金は日割りされて#rate円になる"() {
         given:
         def customerContract = new CustomerContract(
             callPlanContract: new CallPlanContract(
