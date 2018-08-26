@@ -1,6 +1,6 @@
 package letsgodev.demo
 
-import spock.lang.IgnoreRest
+
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -95,7 +95,6 @@ class TariffSpec extends Specification {
         FLAT_L     | 0              | 6000
         FLAT_M     | 0              | 4500
         STEPWISE_S | 0              | 2900
-        STEPWISE_S | 0              | 2900
         STEPWISE_S | 1_000_000_000  | 2900
         STEPWISE_S | 1_000_000_001  | 4000
         STEPWISE_S | 3_000_000_000  | 4000
@@ -107,9 +106,8 @@ class TariffSpec extends Specification {
         STEPWISE_S | Long.MAX_VALUE | 7000
     }
 
-    @IgnoreRest
     @Unroll
-    void "データ定額プランの#dataPlanを当月の#contractDateに新規契約したとき、月額の基本料金は日割りされて#rate円になる"() {
+    void "データ定額プランの#dataPlanを当月の#contractDateに新規契約したとき、データ通信量が#totalDataBytesバイトの場合の月額の基本料金は日割りされて#rate円になる"() {
         given:
         def customerContract = new CustomerContract(
             dataPlanContract: new DataPlanContract(
@@ -120,41 +118,46 @@ class TariffSpec extends Specification {
         )
 
         and:
-        def trafficStats = new TrafficStats()
+        def trafficStats = new TrafficStats(totalDataBytes: totalDataBytes)
 
         expect:
         tariff.getRateOfDataPlan(cutoffDate, customerContract, trafficStats) == rate
 
         where:
-//        callPlan       | contractDate                                          | rate
-//        BASIC_THE_NEXT | cutoffDate.withDayOfMonth(1)                          | 4500
-//        BASIC_THE_NEXT | cutoffDate.withDayOfMonth(2)                          | RateUtils.round(4500 / cutoffDate.lengthOfMonth() * (cutoffDate.lengthOfMonth() - 1))
-//        BASIC_THE_NEXT | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | RateUtils.round(4500 / cutoffDate.lengthOfMonth())
-//        BASIC_HENSHIN  | cutoffDate.withDayOfMonth(1)                          | 3500
-//        BASIC_HENSHIN  | cutoffDate.withDayOfMonth(2)                          | RateUtils.round(3500 / cutoffDate.lengthOfMonth() * (cutoffDate.lengthOfMonth() - 1))
-//        BASIC_HENSHIN  | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | RateUtils.round(3500 / cutoffDate.lengthOfMonth())
-//        BASIC_X        | cutoffDate.withDayOfMonth(1)                          | 2500
-//        BASIC_X        | cutoffDate.withDayOfMonth(2)                          | RateUtils.round(2500 / cutoffDate.lengthOfMonth() * (cutoffDate.lengthOfMonth() - 1))
-//        BASIC_X        | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | RateUtils.round(2500 / cutoffDate.lengthOfMonth())
-
-        dataPlan       | contractDate                                          | totalDataBytes | rate
-        FLAT_LL        | cutoffDate.withDayOfMonth(1)                          | 0 | 7000
-        FLAT_LL        | cutoffDate.withDayOfMonth(2)                          | 0 | RateUtils.round(7000 / cutoffDate.lengthOfMonth() * (cutoffDate.lengthOfMonth() - 1))
-        FLAT_LL        | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | 0 | RateUtils.round(7000 / cutoffDate.lengthOfMonth())
-
-//        FLAT_L         | 0                                                     | 6000
-//        FLAT_M         | 0                                                     | 4500
-//        STEPWISE_S     | 0                                                     | 2900
-//        STEPWISE_S     | 0                                                     | 2900
-//        STEPWISE_S     | 1_000_000_000                                         | 2900
-//        STEPWISE_S     | 1_000_000_001                                         | 4000
-//        STEPWISE_S     | 3_000_000_000                                         | 4000
-//        STEPWISE_S     | 3_000_000_001                                         | 5000
-//        STEPWISE_S     | 5_000_000_000                                         | 5000
-//        STEPWISE_S     | 5_000_000_001                                         | 7000
-//        STEPWISE_S     | 20_000_000_000                                        | 7000
-//        STEPWISE_S     | 20_000_000_001                                        | 7000
-//        STEPWISE_S     | Long.MAX_VALUE                                        | 7000
+        dataPlan   | contractDate                                          | totalDataBytes | rate
+        FLAT_LL    | cutoffDate.withDayOfMonth(1)                          | 0              | 7000
+        FLAT_LL    | cutoffDate.withDayOfMonth(2)                          | 0              | RateUtils.round(7000 / cutoffDate.lengthOfMonth() * (cutoffDate.lengthOfMonth() - 1))
+        FLAT_LL    | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | 0              | RateUtils.round(7000 / cutoffDate.lengthOfMonth())
+        FLAT_L     | cutoffDate.withDayOfMonth(1)                          | 0              | 6000
+        FLAT_L     | cutoffDate.withDayOfMonth(2)                          | 0              | RateUtils.round(6000 / cutoffDate.lengthOfMonth() * (cutoffDate.lengthOfMonth() - 1))
+        FLAT_L     | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | 0              | RateUtils.round(6000 / cutoffDate.lengthOfMonth())
+        FLAT_M     | cutoffDate.withDayOfMonth(1)                          | 0              | 4500
+        FLAT_M     | cutoffDate.withDayOfMonth(2)                          | 0              | RateUtils.round(4500 / cutoffDate.lengthOfMonth() * (cutoffDate.lengthOfMonth() - 1))
+        FLAT_M     | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | 0              | RateUtils.round(4500 / cutoffDate.lengthOfMonth())
+        STEPWISE_S | cutoffDate.withDayOfMonth(1)                          | 0              | 2900
+        STEPWISE_S | cutoffDate.withDayOfMonth(2)                          | 0              | RateUtils.round(2900 / cutoffDate.lengthOfMonth() * (cutoffDate.lengthOfMonth() - 1))
+        STEPWISE_S | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | 0              | RateUtils.round(2900 / cutoffDate.lengthOfMonth())
+        STEPWISE_S | cutoffDate.withDayOfMonth(1)                          | 1_000_000_000  | 2900
+        STEPWISE_S | cutoffDate.withDayOfMonth(2)                          | 1_000_000_000  | RateUtils.round(2900 / cutoffDate.lengthOfMonth() * (cutoffDate.lengthOfMonth() - 1))
+        STEPWISE_S | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | 1_000_000_000  | RateUtils.round(2900 / cutoffDate.lengthOfMonth())
+        STEPWISE_S | cutoffDate.withDayOfMonth(1)                          | 1_000_000_001  | 4000
+        STEPWISE_S | cutoffDate.withDayOfMonth(2)                          | 1_000_000_001  | RateUtils.round(4000 / cutoffDate.lengthOfMonth() * (cutoffDate.lengthOfMonth() - 1))
+        STEPWISE_S | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | 1_000_000_001  | RateUtils.round(4000 / cutoffDate.lengthOfMonth())
+        STEPWISE_S | cutoffDate.withDayOfMonth(1)                          | 3_000_000_000  | 4000
+        STEPWISE_S | cutoffDate.withDayOfMonth(2)                          | 3_000_000_000  | RateUtils.round(4000 / cutoffDate.lengthOfMonth() * (cutoffDate.lengthOfMonth() - 1))
+        STEPWISE_S | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | 3_000_000_000  | RateUtils.round(4000 / cutoffDate.lengthOfMonth())
+        STEPWISE_S | cutoffDate.withDayOfMonth(1)                          | 3_000_000_001  | 5000
+        STEPWISE_S | cutoffDate.withDayOfMonth(2)                          | 3_000_000_001  | RateUtils.round(5000 / cutoffDate.lengthOfMonth() * (cutoffDate.lengthOfMonth() - 1))
+        STEPWISE_S | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | 3_000_000_001  | RateUtils.round(5000 / cutoffDate.lengthOfMonth())
+        STEPWISE_S | cutoffDate.withDayOfMonth(1)                          | 5_000_000_000  | 5000
+        STEPWISE_S | cutoffDate.withDayOfMonth(2)                          | 5_000_000_000  | RateUtils.round(5000 / cutoffDate.lengthOfMonth() * (cutoffDate.lengthOfMonth() - 1))
+        STEPWISE_S | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | 5_000_000_000  | RateUtils.round(5000 / cutoffDate.lengthOfMonth())
+        STEPWISE_S | cutoffDate.withDayOfMonth(1)                          | 5_000_000_001  | 7000
+        STEPWISE_S | cutoffDate.withDayOfMonth(2)                          | 5_000_000_001  | RateUtils.round(7000 / cutoffDate.lengthOfMonth() * (cutoffDate.lengthOfMonth() - 1))
+        STEPWISE_S | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | 5_000_000_001  | RateUtils.round(7000 / cutoffDate.lengthOfMonth())
+        STEPWISE_S | cutoffDate.withDayOfMonth(1)                          | Long.MAX_VALUE | 7000
+        STEPWISE_S | cutoffDate.withDayOfMonth(2)                          | Long.MAX_VALUE | RateUtils.round(7000 / cutoffDate.lengthOfMonth() * (cutoffDate.lengthOfMonth() - 1))
+        STEPWISE_S | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | Long.MAX_VALUE | RateUtils.round(7000 / cutoffDate.lengthOfMonth())
     }
 
     @Unroll
