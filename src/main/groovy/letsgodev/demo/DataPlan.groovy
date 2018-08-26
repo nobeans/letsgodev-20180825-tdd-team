@@ -2,33 +2,35 @@ package letsgodev.demo
 
 import groovy.transform.TupleConstructor
 
+import java.time.LocalDate
+
 @TupleConstructor
 enum DataPlan implements Rateable {
 
     FLAT_LL("[定額]仮面データパックLL"){
         @Override
-        BigDecimal rate(CustomerContract customerContract, TrafficStats trafficStats) {
+        BigDecimal rate(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) {
             7000
         }
     },
 
     FLAT_L("仮面データパックL"){
         @Override
-        BigDecimal rate(CustomerContract customerContract, TrafficStats trafficStats) {
+        BigDecimal rate(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) {
             6000
         }
     },
 
     FLAT_M("仮面データパックM"){
         @Override
-        BigDecimal rate(CustomerContract customerContract, TrafficStats trafficStats) {
+        BigDecimal rate(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) {
             4500
         }
     },
 
     STEPWISE_S("仮面データパックS"){
         @Override
-        BigDecimal rate(CustomerContract customerContract, TrafficStats trafficStats) {
+        BigDecimal rate(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) {
             if (trafficStats.totalDataBytes <= 1_000_000_000) {
                 return 2900
             } else if (trafficStats.totalDataBytes <= 3_000_000_000) {
@@ -44,7 +46,7 @@ enum DataPlan implements Rateable {
     String name
 
     @Override
-    abstract BigDecimal rate(CustomerContract customerContract, TrafficStats trafficStats)
+    abstract BigDecimal rate(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats)
 
     @Override
     String toString() {

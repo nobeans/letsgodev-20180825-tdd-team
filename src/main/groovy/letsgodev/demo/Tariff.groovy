@@ -1,37 +1,39 @@
 package letsgodev.demo
 
+import java.time.LocalDate
+
 class Tariff {
 
-    BigDecimal getTotalRate(CustomerContract customerContract, TrafficStats trafficStats) {
-        getSubtotalRateOfCallPlan(customerContract, trafficStats) +
-            getSubtotalRateOfDataPlan(customerContract, trafficStats) +
-            getRateOfAdditionalServices(customerContract, trafficStats)
+    BigDecimal getTotalRate(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) {
+        getSubtotalRateOfCallPlan(cutoffDate, customerContract, trafficStats) +
+            getSubtotalRateOfDataPlan(cutoffDate, customerContract, trafficStats) +
+            getRateOfAdditionalServices(cutoffDate, customerContract, trafficStats)
     }
 
-    private BigDecimal getSubtotalRateOfCallPlan(CustomerContract customerContract, TrafficStats trafficStats) {
-        getRateOfCallPlan(customerContract, trafficStats) +
-            getRateOfInternetConnection(customerContract, trafficStats)
+    private BigDecimal getSubtotalRateOfCallPlan(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) {
+        getRateOfCallPlan(cutoffDate, customerContract, trafficStats) +
+            getRateOfInternetConnection(cutoffDate, customerContract, trafficStats)
     }
 
-    private BigDecimal getRateOfCallPlan(CustomerContract customerContract, TrafficStats trafficStats) {
-        customerContract.callPlan.rate(customerContract, trafficStats)
+    private BigDecimal getRateOfCallPlan(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) {
+        customerContract.callPlan.rate(cutoffDate, customerContract, trafficStats)
     }
 
-    private BigDecimal getRateOfInternetConnection(CustomerContract customerContract, TrafficStats trafficStats) { // 統一感を出すためにあえてfeeではなくrateにした
-        new InternetConnection().rate(customerContract, trafficStats)
+    private BigDecimal getRateOfInternetConnection(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) { // 統一感を出すためにあえてfeeではなくrateにした
+        new InternetConnection().rate(cutoffDate, customerContract, trafficStats)
     }
 
-    private BigDecimal getSubtotalRateOfDataPlan(CustomerContract customerContract, TrafficStats trafficStats) {
-        getRateOfDataPlan(customerContract, trafficStats)
+    private BigDecimal getSubtotalRateOfDataPlan(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) {
+        getRateOfDataPlan(cutoffDate, customerContract, trafficStats)
     }
 
-    private BigDecimal getRateOfDataPlan(CustomerContract customerContract, TrafficStats trafficStats) {
-        customerContract.dataPlan.rate(customerContract, trafficStats)
+    private BigDecimal getRateOfDataPlan(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) {
+        customerContract.dataPlan.rate(cutoffDate, customerContract, trafficStats)
     }
 
-    private BigDecimal getRateOfAdditionalServices(CustomerContract customerContract, TrafficStats trafficStats) {
+    private BigDecimal getRateOfAdditionalServices(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) {
         customerContract.additionalServiceContracts?.sum { AdditionalServiceContract additionalServiceContract ->
-            additionalServiceContract.additionalService.rate(customerContract, trafficStats)
+            additionalServiceContract.additionalService.rate(cutoffDate, customerContract, trafficStats)
         } as BigDecimal ?: 0
     }
 }

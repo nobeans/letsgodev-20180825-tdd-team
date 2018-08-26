@@ -3,6 +3,8 @@ package letsgodev.demo
 import spock.lang.Specification
 import spock.lang.Unroll
 
+import java.time.LocalDate
+
 import static letsgodev.demo.AdditionalService.*
 import static letsgodev.demo.CallPlan.*
 import static letsgodev.demo.DataPlan.*
@@ -10,6 +12,8 @@ import static letsgodev.demo.DataPlan.*
 class TariffSpec extends Specification {
 
     Tariff tariff = new Tariff()
+
+    LocalDate cutoffDate = LocalDate.of(2018, 8, 30)
 
     @Unroll
     void "基本プランが#callPlanのとき、月額の基本料金は#rate円になる"() {
@@ -20,7 +24,7 @@ class TariffSpec extends Specification {
         def trafficStats = new TrafficStats()
 
         expect:
-        tariff.getRateOfCallPlan(customerContract, trafficStats) == rate
+        tariff.getRateOfCallPlan(cutoffDate, customerContract, trafficStats) == rate
 
         where:
         callPlan       | rate
@@ -38,7 +42,7 @@ class TariffSpec extends Specification {
         def trafficStats = new TrafficStats(totalDataBytes: totalDataBytes)
 
         expect:
-        tariff.getRateOfDataPlan(customerContract, trafficStats) == rate
+        tariff.getRateOfDataPlan(cutoffDate, customerContract, trafficStats) == rate
 
         where:
         dataPlan   | totalDataBytes | rate
@@ -67,7 +71,7 @@ class TariffSpec extends Specification {
         def trafficStats = new TrafficStats()
 
         expect:
-        tariff.getRateOfInternetConnection(customerContract, trafficStats) == 300
+        tariff.getRateOfInternetConnection(cutoffDate, customerContract, trafficStats) == 300
     }
 
     @Unroll
@@ -83,7 +87,7 @@ class TariffSpec extends Specification {
         def trafficStats = new TrafficStats()
 
         expect:
-        tariff.getRateOfAdditionalServices(customerContract, trafficStats) == rate
+        tariff.getRateOfAdditionalServices(cutoffDate, customerContract, trafficStats) == rate
 
         where:
         additionalServices                                                          | rate
@@ -102,7 +106,7 @@ class TariffSpec extends Specification {
         def trafficStats = new TrafficStats(totalDataBytes: totalDataBytes)
 
         expect:
-        tariff.getTotalRate(customerContract, trafficStats) == rate
+        tariff.getTotalRate(cutoffDate, customerContract, trafficStats) == rate
 
         where:
         callPlan       | dataPlan | totalDataBytes | rate
