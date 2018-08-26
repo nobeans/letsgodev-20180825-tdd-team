@@ -51,6 +51,11 @@ enum AdditionalService implements Rateable {
     boolean canBeFreeForFirstContract(LocalDate cutoffDate, CustomerContract customerContract) {
         def currentContract = customerContract.availableAdditionalServiceContracts.find { it.additionalService == this }
         def canceledContract = customerContract.canceledAdditionalServiceContracts.find { it.additionalService == this }
-        currentContract && !canceledContract && cutoffDate <= currentContract.contractDate.plusMonths(2) // TODO 境界怪しい？
+        currentContract && // 現在有効な契約があるかどうか
+            !canceledContract && // 初回加入時かどうか
+            ( // 加入月とその翌月かどうか
+                DateUtils.isSameMonth(cutoffDate, currentContract.contractDate) ||
+                    DateUtils.isSameMonth(cutoffDate, currentContract.contractDate.plusMonths(1))
+            )
     }
 }
