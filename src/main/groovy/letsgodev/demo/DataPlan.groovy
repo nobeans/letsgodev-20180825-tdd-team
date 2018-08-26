@@ -7,7 +7,7 @@ import java.time.LocalDate
 @TupleConstructor
 enum DataPlan implements Rateable {
 
-    FLAT_LL("[定額]仮面データパックLL"){
+    FLAT_LL("仮面データパックLL"){
         @Override
         BigDecimal rate(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) {
             7000
