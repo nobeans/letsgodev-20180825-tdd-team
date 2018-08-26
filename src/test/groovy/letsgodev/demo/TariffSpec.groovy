@@ -225,7 +225,8 @@ class TariffSpec extends Specification {
     }
 
     @Unroll
-    void "オプションとして#additionalServicesを契約しているとき、オプション料金が#rate円になる"() {
+    @IgnoreRest
+    void "オプションとして#additionalServicesを#contractDateに契約してたとき、#cutoffDateを締め日とした月額のオプション料金は#rate円になる"() {
         given:
         def additionalServiceContracts = []
 
@@ -239,7 +240,7 @@ class TariffSpec extends Specification {
         additionalServiceContracts.addAll(additionalServices.collect { AdditionalService additionalService ->
             new AdditionalServiceContract(
                 additionalService: additionalService,
-                contractDate: LocalDate.of(2018, 4, 1), // ここでは初回加入月の無料計算の対象外として計算する
+                contractDate: dateOf(contractDate),
                 cancelDate: null,
             )
         })
@@ -260,6 +261,7 @@ class TariffSpec extends Specification {
         [SAFE_NET_SECURITY]                                                 | 500
         [SAFE_COMPENSATION_SERVICE, SAFE_REMOTE_SUPPORT, SAFE_NET_SECURITY] | 330 + 400 + 500
 
+        contractDate = "2018-04-01" // ここでは初回加入月の無料計算の対象外として計算する
         cutoffDate = "2018-08-31"
     }
 
