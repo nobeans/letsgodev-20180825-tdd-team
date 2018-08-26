@@ -296,7 +296,7 @@ class TariffSpec extends Specification {
         cancelDescription = cancelDate ? "て${cancelDate}に解約し" : ""
     }
 
-    void "すべてを合計した月額請求金額(税抜き)を計算する"() {
+    void "WIP: すべてを合計した月額請求金額(税抜き)を計算する"() {
         given:
         def customerContract = new CustomerContract(
             callPlanContract: new CallPlanContract(
