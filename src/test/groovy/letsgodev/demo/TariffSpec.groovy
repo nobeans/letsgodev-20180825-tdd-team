@@ -92,7 +92,7 @@ class TariffSpec extends Specification {
             new AdditionalServiceContract(
                 additionalService: additionalService,
                 contractDate: LocalDate.of(2018, 4, 1), // ここでは初回加入月の無料計算の対象外として計算する
-                cancelDate: null
+                cancelDate: null,
             )
         })
 
@@ -128,7 +128,7 @@ class TariffSpec extends Specification {
         additionalServiceContracts << new AdditionalServiceContract(
             additionalService: additionalService,
             contractDate: contractDate,
-            cancelDate: null
+            cancelDate: null,
         )
 
         def customerContract = new CustomerContract(additionalServiceContracts: additionalServiceContracts)
@@ -170,8 +170,8 @@ class TariffSpec extends Specification {
         // 計算対象となるオプション契約
         additionalServiceContracts << new AdditionalServiceContract(
             additionalService: additionalService,
-            contractDate: eventDate,
-            cancelDate: null
+            contractDate: contractDate,
+            cancelDate: null,
         )
 
         def customerContract = new CustomerContract(additionalServiceContracts: additionalServiceContracts)
@@ -183,7 +183,38 @@ class TariffSpec extends Specification {
         tariff.getRateOfAdditionalServices(cutoffDate, customerContract, trafficStats) == rate
 
         where:
-        additionalService         | eventDate                                             | rate
+        additionalService         | contractDate                                          | rate
+        SAFE_COMPENSATION_SERVICE | cutoffDate.withDayOfMonth(1)                          | 330
+        SAFE_COMPENSATION_SERVICE | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | 330
+        SAFE_REMOTE_SUPPORT       | cutoffDate.withDayOfMonth(1)                          | 400
+        SAFE_REMOTE_SUPPORT       | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | 400
+        SAFE_NET_SECURITY         | cutoffDate.withDayOfMonth(1)                          | 500
+        SAFE_NET_SECURITY         | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | 500
+    }
+
+    @Unroll
+    void "オプションとして#additionalServiceを月途中で解約した場合、日割り計算せずに満額請求となる"() {
+        given:
+        def additionalServiceContracts = []
+
+        // 過去のオプション契約(これがない場合は、加入月＝無料となるため、※15の条件は適用外となる)
+        // 計算対象となるオプション契約
+        additionalServiceContracts << new AdditionalServiceContract(
+            additionalService: additionalService,
+            contractDate: LocalDate.of(1970, 1, 1),
+            cancelDate: cancelDate,
+        )
+
+        def customerContract = new CustomerContract(additionalServiceContracts: additionalServiceContracts)
+
+        and:
+        def trafficStats = new TrafficStats()
+
+        expect:
+        tariff.getRateOfAdditionalServices(cutoffDate, customerContract, trafficStats) == rate
+
+        where:
+        additionalService         | cancelDate                                            | rate
         SAFE_COMPENSATION_SERVICE | cutoffDate.withDayOfMonth(1)                          | 330
         SAFE_COMPENSATION_SERVICE | cutoffDate.withDayOfMonth(cutoffDate.lengthOfMonth()) | 330
         SAFE_REMOTE_SUPPORT       | cutoffDate.withDayOfMonth(1)                          | 400
