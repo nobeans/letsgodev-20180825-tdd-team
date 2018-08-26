@@ -10,6 +10,13 @@ enum AdditionalService implements Rateable {
     SAFE_COMPENSATION_SUPPORT("あんしん補償サービス"){
         @Override
         BigDecimal rate(LocalDate cutoffDate, CustomerContract customerContract, TrafficStats trafficStats) {
+            // ※14 初回加入時に限り最大2ヶ月無料(加入月とその翌月)
+            // TODO キャンセル時の履歴をどうするか
+            // TODO 「初回加入時」
+            def contractDate = customerContract.additionalServiceContracts.find { it.additionalService == SAFE_COMPENSATION_SUPPORT }?.contractDate
+            if (contractDate && cutoffDate <= contractDate.plusMonths(2)) {
+                return 0
+            }
             330
         }
     },
